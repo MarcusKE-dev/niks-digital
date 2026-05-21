@@ -11,17 +11,19 @@ const config: Config = {
       // ── COLORS ──────────────────────────────────────────────
       colors: {
         primary: {
-          DEFAULT: '#FF6200',
-          50:  '#FFF3EC',
-          100: '#FFE4CC',
-          200: '#FFC999',
-          300: '#FFAD66',
-          400: '#FF9233',
-          500: '#FF6200',   // ← brand orange
-          600: '#CC4E00',
-          700: '#993B00',
-          800: '#662700',
-          900: '#331400',
+
+  DEFAULT: '#CC0000',
+  50:  '#FFF0F0',
+  100: '#FFD6D6',
+  200: '#FFB3B3',
+  300: '#FF8080',
+  400: '#FF4D4D',
+  500: '#CC0000',
+  600: '#AA0000',
+  700: '#880000',
+  800: '#660000',
+  900: '#440000',
+
         },
         dark: {
           DEFAULT: '#1A1A2E',
@@ -107,7 +109,7 @@ const config: Config = {
         'modal':      '0 20px 60px rgba(0,0,0,0.15)',
         'drawer':     '-4px 0 24px rgba(0,0,0,0.10)',
         'toast':      '0 8px 24px rgba(0,0,0,0.12)',
-        'btn-primary': '0 4px 12px rgba(255,98,0,0.30)',
+        'btn-primary': '0 4px 12px rgba(204,0,0,0.30)',
         'none':       'none',
       },
 
@@ -276,7 +278,7 @@ const config: Config = {
           width: '100%',
           outline: 'none',
           transition: 'border-color 200ms ease',
-          '&:focus': { borderColor: '#FF6200' },
+          '&:focus': { borderColor: '#CC0000' },
         },
       })
     },

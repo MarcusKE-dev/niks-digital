@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!data) return { title: 'Product Not Found' }
   return {
     title: data.name,
-    description: data.description?.slice(0, 155) ?? `Buy ${data.name} at Niks Digital Connection, Nairobi.`,
+    description: data.description?.slice(0, 155) ?? `Buy ${data.name} at Niks Digital Connections, Nairobi.`,
     openGraph: { images: data.thumbnail ? [data.thumbnail] : [] },
   }
 }

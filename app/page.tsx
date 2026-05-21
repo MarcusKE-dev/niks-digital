@@ -11,7 +11,7 @@ import type { ProductSummary, Category } from '@/types'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Niks Digital Connection – Electronics & Home Appliances | Nairobi',
+  title: 'Niks Digital Connections – Electronics & Home Appliances | Nairobi',
   description: 'Shop TVs, fridges, laptops, cookers, phones and more in Nairobi. Genuine products · Kenyan prices · Free delivery · M-Pesa accepted.',
 }
 
@@ -31,14 +31,13 @@ const TESTIMONIALS = [
   { name: 'Fatuma A.',    location: 'South C, Nairobi', stars: 5, quote: 'Bought a laptop for my son\'s studies. The team was very helpful in recommending the right spec for his budget.' },
 ]
 const CATEGORIES = [
-  { slug:'televisions',   label:'Televisions',       icon:'📺', count:'20+' },
-  { slug:'refrigerators', label:'Refrigerators',     icon:'🧊', count:'12+' },
-  { slug:'cookers',       label:'Cookers & Ovens',   icon:'🔥', count:'15+' },
-  { slug:'laptops',       label:'Laptops & PCs',     icon:'💻', count:'14+' },
-  { slug:'phones',        label:'Mobile Phones',     icon:'📱', count:'22+' },
-  { slug:'audio',         label:'Audio & Speakers',  icon:'🔊', count:'11+' },
-  { slug:'cameras',       label:'Cameras',           icon:'📷', count:'7+' },
-  { slug:'kitchen',       label:'Kitchen Appliances',icon:'🍳', count:'18+' },
+  { slug: 'phones',      label: 'Phones & Accessories',  icon: '📱', image: '/categories/phones.jpg',      count: '50+' },
+  { slug: 'computers',   label: 'Computer Accessories',   icon: '💻', image: '/categories/computers.jpg',   count: '30+' },
+  { slug: 'tvs',         label: 'Televisions',            icon: '📺', image: '/categories/tvs.jpg',         count: '20+' },
+  { slug: 'audio',       label: 'Audio & Speakers',       icon: '🎧', image: '/categories/audio.jpg',       count: '15+' },
+  { slug: 'kitchen',     label: 'Kitchen Appliances',     icon: '🍳', image: '/categories/kitchen.jpg',     count: '25+' },
+  { slug: 'electronics', label: 'Basic Electronics',      icon: '🔌', image: '/categories/electronics.jpg', count: '40+' },
+  { slug: 'wearables',   label: 'Smart Watches',          icon: '⌚', image: '/categories/wearables.jpg',   count: '10+' },
 ]
 
 async function getProducts() {
@@ -51,9 +50,18 @@ async function getProducts() {
     .limit(20)
   return (data ?? []) as ProductSummary[]
 }
+async function getSettings() {
+  const supabase = createSupabaseServer()
+  const { data } = await supabase
+    .from('site_settings')
+    .select('key, value')
+  const map: Record<string, string> = {}
+  ;(data ?? []).forEach(row => { map[row.key] = row.value })
+  return map
+}
 
 export default async function HomePage() {
-  const products    = await getProducts()
+  const [products, settings] = await Promise.all([getProducts(), getSettings()])
   const featured    = products.filter(p => p.is_featured).slice(0, 5)
   const bestSellers = products.slice(0, 10)
   const newArrivals = products.filter(p => p.badge === 'new').slice(0, 5)
@@ -67,15 +75,13 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════════════════
             HERO
         ══════════════════════════════════════════════════ */}
-        <section className="bg-white section-padding" aria-label="Welcome to Niks Digital Connection">
+
+        <section className="bg-white py-8 lg:py-12" aria-label="Welcome to Niks Digital Connections">
           <div className="container-site">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
               {/* Text */}
               <div>
-                <div className="inline-flex items-center gap-2 bg-surface border border-border rounded-full px-3 py-1.5 mb-6">
-                  <span className="text-xs font-semibold text-dark">🇰🇪 Nairobi's Trusted Electronics Store</span>
-                </div>
 
                 <h1 className="text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-4 text-balance">
                   Kenya's Best Electronics.<br />
@@ -106,49 +112,20 @@ export default async function HomePage() {
               </div>
 
               {/* Image */}
-              <div className="relative rounded-xl overflow-hidden border border-border bg-surface aspect-[4/3]">
+
+		<div className="relative rounded-xl overflow-hidden border border-border bg-surface aspect-[4/3]">
                 <Image
-                  src="https://picsum.photos/seed/niks-hero-electronics/800/600"
-                  alt="Electronics and home appliances at Niks Digital Connection, Nairobi"
+src={settings.hero_image ?? 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&q=80'}                  alt="Electronics and home appliances at Niks Digital Connections, Nairobi"
                   fill
                   className="object-cover"
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
-            </div>
-
-            {/* Brand logos */}
-            <div className="mt-14 pt-8 border-t border-border">
-              <p className="text-xs text-muted uppercase tracking-widest text-center mb-5 font-semibold">Authorised Dealer For</p>
-              <div className="flex flex-wrap justify-center gap-8 items-center">
-                {BRANDS.map(b => (
-                  <span key={b} className="text-base font-extrabold text-gray-300 tracking-tight select-none">{b}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+            </div>          
+           </div>
         </section>
-
-        {/* ══════════════════════════════════════════════════
-            WHY CHOOSE US
-        ══════════════════════════════════════════════════ */}
-        <section className="bg-surface border-y border-border py-10" aria-label="Why shop at Niks Digital">
-          <div className="container-site">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              {FEATURES.map(f => (
-                <div key={f.title} className="flex items-start gap-3">
-                  <span className="text-2xl flex-shrink-0 mt-0.5" aria-hidden>{f.icon}</span>
-                  <div>
-                    <p className="text-sm font-bold text-dark">{f.title}</p>
-                    <p className="text-xs text-muted mt-0.5 leading-snug">{f.sub}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
+      
         {/* ══════════════════════════════════════════════════
             CATEGORY GRID
         ══════════════════════════════════════════════════ */}
@@ -161,16 +138,35 @@ export default async function HomePage() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
               {CATEGORIES.map(cat => (
-                <Link
-                  key={cat.slug}
-                  href={`/shop?category=${cat.slug}`}
-                  className="group flex flex-col items-center text-center p-4 border border-border rounded-lg bg-white hover:border-l-4 hover:border-l-primary hover:translate-x-1 hover:shadow-card transition-all duration-normal focus-ring"
-                >
-                  <span className="text-3xl mb-2" aria-hidden>{cat.icon}</span>
-                  <span className="text-xs font-bold text-dark leading-snug">{cat.label}</span>
-                  <span className="text-2xs text-muted mt-0.5">{cat.count} products</span>
-                </Link>
-              ))}
+  <Link
+    key={cat.slug}
+    href={`/shop?category=${cat.slug}`}
+    className="group flex flex-col items-center text-center border border-border rounded-xl bg-white hover:border-primary hover:shadow-card-hover transition-all duration-normal overflow-hidden focus-ring"
+  >
+    {/* Photo area */}
+    <div className="w-full h-24 bg-surface overflow-hidden relative">
+      <img
+        src={cat.image}
+        alt={cat.label}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-slow"
+        onError={(e) => {
+          // Falls back to emoji if photo missing
+          const target = e.target as HTMLImageElement
+          target.style.display = 'none'
+          target.nextElementSibling?.classList.remove('hidden')
+        }}
+      />
+      <span className="hidden absolute inset-0 flex items-center justify-center text-4xl bg-surface">
+        {cat.icon}
+      </span>
+    </div>
+    {/* Label */}
+    <div className="p-3">
+      <span className="text-xs font-bold text-dark leading-snug block">{cat.label}</span>
+      <span className="text-2xs text-muted mt-0.5 block">{cat.count} products</span>
+    </div>
+  </Link>
+))}
             </div>
           </div>
         </section>
@@ -210,6 +206,25 @@ export default async function HomePage() {
             >
               Shop Now →
             </Link>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════
+            WHY CHOOSE US
+        ══════════════════════════════════════════════════ */}
+        <section className="bg-surface border-y border-border py-10" aria-label="Why shop at Niks Digital">
+          <div className="container-site">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              {FEATURES.map(f => (
+                <div key={f.title} className="flex items-start gap-3">
+                  <span className="text-2xl flex-shrink-0 mt-0.5" aria-hidden>{f.icon}</span>
+                  <div>
+                    <p className="text-sm font-bold text-dark">{f.title}</p>
+                    <p className="text-xs text-muted mt-0.5 leading-snug">{f.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

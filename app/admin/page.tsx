@@ -4,7 +4,8 @@ import { formatKES, formatDate, getOrderStatusColor, getOrderStatusLabel } from 
 
 export default async function AdminDashboard() {
   const supabase = createSupabaseServer()
-
+const { data: { user } } = await supabase.auth.getUser()
+  console.log('[dashboard] user:', user?.email || 'none')
   const [{ count: totalOrders }, { count: totalProducts }, { data: recentOrders }, { data: lowStock }] =
     await Promise.all([
       supabase.from('orders').select('*', { count: 'exact', head: true }),

@@ -50,7 +50,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
       <div className="relative bg-surface overflow-hidden" style={{ height: 220 }}>
         <Image
           src={productImageSrc(product.thumbnail)}
-          alt={`${product.name} — available at Niks Digital Connection`}
+          alt={`${product.name} — available at Niks Digital Connections`}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="object-contain p-4 transition-transform duration-slow group-hover:scale-105"

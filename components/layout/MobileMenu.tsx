@@ -12,7 +12,7 @@ import {
   X, Home, ShoppingBag, Info, Phone,
   Tv2, Refrigerator, FlameKindling, Laptop,
   Smartphone, Music2, Camera, UtensilsCrossed,
-  MessageCircle, ChevronRight,
+  MessageCircle, ChevronRight, Zap, Watch,
 } from 'lucide-react'
 import { cn }            from '@/lib/utils'
 import { useCartCount }  from '@/store/cartStore'
@@ -34,14 +34,13 @@ const MAIN_LINKS = [
 ] as const
 
 const CATEGORY_LINKS = [
-  { href: '/shop?category=televisions',  label: 'Televisions',       icon: Tv2 },
-  { href: '/shop?category=refrigerators',label: 'Refrigerators',     icon: Refrigerator },
-  { href: '/shop?category=cookers',      label: 'Cookers & Ovens',   icon: FlameKindling },
-  { href: '/shop?category=laptops',      label: 'Laptops & PCs',     icon: Laptop },
-  { href: '/shop?category=phones',       label: 'Mobile Phones',     icon: Smartphone },
-  { href: '/shop?category=audio',        label: 'Audio & Speakers',  icon: Music2 },
-  { href: '/shop?category=cameras',      label: 'Cameras',           icon: Camera },
-  { href: '/shop?category=kitchen',      label: 'Kitchen Appliances',icon: UtensilsCrossed },
+  { href: '/shop?category=phones',      label: 'Phones & Accessories',  icon: Smartphone },
+  { href: '/shop?category=computers',   label: 'Computer Accessories',   icon: Laptop },
+  { href: '/shop?category=tvs',         label: 'Televisions',            icon: Tv2 },
+  { href: '/shop?category=audio',       label: 'Audio & Speakers',       icon: Music2 },
+  { href: '/shop?category=kitchen',     label: 'Kitchen Appliances',     icon: UtensilsCrossed },
+  { href: '/shop?category=electronics', label: 'Basic Electronics',      icon: Zap },
+  { href: '/shop?category=wearables',   label: 'Smart Watches',          icon: Watch },
 ] as const
 
 // ── COMPONENT ─────────────────────────────────────────────────

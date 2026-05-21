@@ -282,17 +282,17 @@ export interface Modal {
 // ── DELIVERY AREAS ───────────────────────────────────────────
 
 export const DELIVERY_AREAS = [
-  { value: 'westlands',    label: 'Westlands',          fee: 0     },
-  { value: 'kilimani',     label: 'Kilimani / Lavington', fee: 0   },
-  { value: 'cbd',          label: 'Nairobi CBD',         fee: 0     },
-  { value: 'kasarani',     label: 'Kasarani / Thika Rd', fee: 200   },
-  { value: 'eastleigh',    label: 'Eastleigh / Pangani', fee: 200   },
-  { value: 'karen',        label: 'Karen / Langata',     fee: 300   },
-  { value: 'south_b_c',    label: 'South B / South C',   fee: 200   },
-  { value: 'ruiru',        label: 'Ruiru / Juja',        fee: 400   },
-  { value: 'kitengela',    label: 'Kitengela / Ongata',  fee: 500   },
-  { value: 'thika',        label: 'Thika Town',          fee: 500   },
-  { value: 'other',        label: 'Other (contact us)',  fee: 0     },
+  { value: 'kikuyu',       label: 'Kikuyu Town',           fee: 0    },
+  { value: 'kawangware',   label: 'Kawangware',            fee: 200  },
+  { value: 'ruthimitu',    label: 'Ruthimitu / Dagoretti',  fee: 200  },
+  { value: 'cbd',          label: 'Nairobi CBD',            fee: 300  },
+  { value: 'westlands',    label: 'Westlands / Parklands',  fee: 300  },
+  { value: 'kasarani',     label: 'Kasarani / Thika Rd',    fee: 400  },
+  { value: 'karen',        label: 'Karen / Langata',        fee: 400  },
+  { value: 'kitengela',    label: 'Kitengela / Ongata',     fee: 500  },
+  { value: 'limuru',       label: 'Limuru / Tigoni',        fee: 300  },
+  { value: 'ruiru',        label: 'Ruiru / Juja',           fee: 500  },
+  { value: 'other',        label: 'Other (contact us)',     fee: 0    },
 ] as const
 
 export type DeliveryArea = typeof DELIVERY_AREAS[number]['value']

@@ -123,7 +123,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
 
           {/* WhatsApp customer */}
           <a
-            href={`https://wa.me/${order.customer_phone.replace(/\D/g, '').replace(/^0/, '254')}?text=Hi ${order.customer_name.split(' ')[0]}! This is Niks Digital Connection regarding your order ${order.order_number}.`}
+            href={`https://wa.me/${order.customer_phone.replace(/\D/g, '').replace(/^0/, '254')}?text=Hi ${order.customer_name.split(' ')[0]}! This is Niks Digital Connections regarding your order ${order.order_number}.`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full h-10 bg-whatsapp text-white text-sm font-semibold rounded-full hover:bg-green-600 transition-colors"
           >

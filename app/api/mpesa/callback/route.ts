@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin }             from '@/lib/supabase'
+import { supabaseAdmin }             from '@/lib/supabase-admin'
 import { parseDarajaCallback }       from '@/lib/daraja'
 
 // Safaricom posts to this URL after the customer enters their PIN

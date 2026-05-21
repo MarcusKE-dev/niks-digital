@@ -1,12 +1,5 @@
 // ════════════════════════════════════════════════════════════
-// CART STORE — Zustand with localStorage persistence
-//
-// This is the central state for the shopping cart.
-// It persists across page reloads using localStorage.
-//
-// Usage in a component:
-//   import { useCartStore } from '@/store/cartStore'
-//   const { items, addItem, total } = useCartStore()
+// CART STORE 
 // ════════════════════════════════════════════════════════════
 
 import { create }        from 'zustand'
@@ -146,9 +139,6 @@ export const useCartStore = create<CartState>()(
       // Only persist the items array (not computed functions)
       partialize: (state) => ({ items: state.items }),
 
-      // Re-hydrate: merge persisted items with fresh stock info
-      // This is a simple implementation — in production you'd
-      // re-fetch stock quantities from the DB on hydration.
       onRehydrateStorage: () => (state) => {
         if (!state) return
         // Filter out any items that no longer have stock
@@ -160,8 +150,6 @@ export const useCartStore = create<CartState>()(
 )
 
 // ── SELECTOR HOOKS ───────────────────────────────────────────
-// Use these for better performance — they only re-render
-// when the specific value they select changes.
 
 /** Is a specific product in the cart? */
 export const useIsInCart = (productId: string) =>

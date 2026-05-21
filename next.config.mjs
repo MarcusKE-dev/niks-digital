@@ -56,6 +56,10 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'date-fns'],
   },
+
+  compress: true,
+  poweredByHeader: false,
+
 }
 
 export default nextConfig

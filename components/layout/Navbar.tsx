@@ -19,7 +19,7 @@ import { useRouter }       from 'next/navigation'
 import {
   Search, ShoppingCart, Menu, MessageCircle,
   Tv2, Refrigerator, FlameKindling, Laptop,
-  Smartphone, Music2, Camera, UtensilsCrossed, X,
+  Smartphone, Music2, Camera, UtensilsCrossed, X, Zap, Watch,
 } from 'lucide-react'
 import { cn }              from '@/lib/utils'
 import { useCartCount }    from '@/store/cartStore'
@@ -29,15 +29,15 @@ import { MobileMenu }      from '@/components/layout/MobileMenu'
 // ── CATEGORY STRIP DATA ───────────────────────────────────────
 
 const CATEGORIES = [
-  { slug: 'televisions',   label: 'Televisions',        icon: Tv2 },
-  { slug: 'refrigerators', label: 'Refrigerators',      icon: Refrigerator },
-  { slug: 'cookers',       label: 'Cookers & Ovens',    icon: FlameKindling },
-  { slug: 'laptops',       label: 'Laptops & PCs',      icon: Laptop },
-  { slug: 'phones',        label: 'Mobile Phones',      icon: Smartphone },
-  { slug: 'audio',         label: 'Audio & Speakers',   icon: Music2 },
-  { slug: 'cameras',       label: 'Cameras',            icon: Camera },
-  { slug: 'kitchen',       label: 'Kitchen Appliances', icon: UtensilsCrossed },
+  { slug: 'phones',      label: 'Phones & Accessories', icon: Smartphone },
+  { slug: 'computers',   label: 'Computer Accessories',  icon: Laptop },
+  { slug: 'tvs',         label: 'Televisions',           icon: Tv2 },
+  { slug: 'audio',       label: 'Audio & Speakers',      icon: Music2 },
+  { slug: 'kitchen',     label: 'Kitchen Appliances',    icon: UtensilsCrossed },
+  { slug: 'electronics', label: 'Basic Electronics',     icon: Zap },
+  { slug: 'wearables',   label: 'Smart Watches',         icon: Watch },
 ] as const
+
 
 // ── COMPONENT ─────────────────────────────────────────────────
 
@@ -109,14 +109,12 @@ export function Navbar() {
             <Link
               href="/"
               className="flex-shrink-0 flex flex-col leading-none group"
-              aria-label="Niks Digital Connection — Home"
+              aria-label="Niks Digital Connections — Home"
             >
-              <span className="font-extrabold text-xl text-dark group-hover:text-dark transition-colors">
-                Niks&nbsp;<span className="text-primary">Digital</span>
+              <span className="font-extrabold text-2xl text-dark group-hover:text-dark transition-colors">
+                Niks Digital&nbsp;<br></br><span className="text-primary">Connections</span>
               </span>
-              <span className="hidden sm:block text-[10px] text-muted uppercase tracking-[0.12em] mt-0.5">
-                Connection · Nairobi
-              </span>
+             
             </Link>
 
             {/* ── SEARCH BAR (desktop) ── */}
@@ -174,7 +172,7 @@ export function Navbar() {
 
               {/* WhatsApp button — desktop only */}
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}?text=Hi! I'm interested in a product from Niks Digital Connection.`}
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}?text=Hi! I'm interested in a product from Niks Digital Connections.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat with us on WhatsApp"

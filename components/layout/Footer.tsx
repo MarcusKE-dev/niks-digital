@@ -53,6 +53,9 @@ const SOCIAL_LINKS = [
     label: 'Niks Digital on YouTube',
     icon:  Youtube,
   },
+  { href: 'https://tiktok.com/@niksdigital',
+       label: 'TikTok',
+      icon: null      },
 ] as const
 
 const CONTACT_ITEMS = [
@@ -71,8 +74,8 @@ const CONTACT_ITEMS = [
   {
     icon:  MapPin,
     label: 'Address',
-    lines: ['Shop 12, Westlands Commercial Centre', 'Westlands, Nairobi, Kenya'],
-    href:  'https://maps.google.com/?q=Westlands+Commercial+Centre+Nairobi',
+    lines: ['Kikuyu Town Centre', 'Kikuyu Town, Kiambu County, Kenya'],
+    href:  'https://maps.google.com/?q=Kikuyu Town+Commercial+Centre+Nairobi',
   },
   {
     icon:  Clock,
@@ -94,8 +97,7 @@ export function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-dark-500" aria-label="Site footer">
-
+<footer className="bg-[#1A1A1A]" aria-label="Site footer">
       {/* ── MAIN FOOTER GRID ── */}
       <div className="container-site py-14 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
@@ -106,7 +108,7 @@ export function Footer() {
             <Link
               href="/"
               className="inline-flex flex-col leading-none mb-4 group"
-              aria-label="Niks Digital Connection — Home"
+              aria-label="Niks Digital Connections — Home"
             >
               <span className="font-extrabold text-xl text-white">
                 Niks&nbsp;<span className="text-primary">Digital</span>
@@ -135,19 +137,21 @@ export function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-2" role="list" aria-label="Social media links">
-              {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-                <a
-                  key={href}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  role="listitem"
-                  className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:bg-primary hover:border-primary transition-all duration-normal"
-                >
-                  <Icon size={16} aria-hidden />
-                </a>
-              ))}
+             {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
+  <a key={href} href={href} target="_blank" rel="noopener noreferrer"
+    aria-label={label}
+    className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:bg-primary hover:border-primary transition-all duration-normal">
+    {Icon
+      ? <Icon size={16} aria-hidden />
+      : (
+        // TikTok SVG icon
+        <svg width="14" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+        </svg>
+      )
+    }
+  </a>
+))}
             </div>
           </div>
 
@@ -258,13 +262,13 @@ export function Footer() {
       </div>
 
       {/* ── BOTTOM BAR ── */}
-      <div className="border-t border-white/8">
+      <div className="border-t border-white/10">
         <div className="container-site py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Copyright */}
             <p className="text-xs text-white/30 text-center sm:text-left">
-              © {year} Niks Digital Connection. All rights reserved.
-              Westlands, Nairobi, Kenya.
+              © {year} Niks Digital Connections. All rights reserved.
+              Kikuyu Town, Kiambu County, Kenya.
             </p>
 
             {/* Legal links */}

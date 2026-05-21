@@ -101,7 +101,8 @@ export default function CheckoutPage() {
         router.push(`/order-confirm/${newOrderId}`)
       }
     } catch (err: any) {
-      toast.error(err?.response?.data?.error ?? 'Something went wrong. Please try again.')
+ console.error('Order error:', err)
+     toast.error(err?.response?.data?.error ?? 'Something went wrong. Please try again.')
       setLoading(false)
     }
   }

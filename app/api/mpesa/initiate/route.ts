@@ -1,6 +1,6 @@
 // app/api/mpesa/initiate/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin }             from '@/lib/supabase'
+import { supabaseAdmin }             from '@/lib/supabase-admin'
 import { initiateStkPush }           from '@/lib/daraja'
 
 export async function POST(req: NextRequest) {
