@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: 'Buy phones, TVs, laptops, speakers and electronics in Kikuyu Town. M-Pesa accepted.',
 }
 
-export const revalidate = 60
+export const revalidate = 0
 
 const FEATURES = [
   { icon: '🚚', title: 'Free Kikuyu Delivery',   sub: 'On orders above KES 10,000' },
@@ -77,27 +77,32 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
         <section className="bg-white py-4 lg:py-8">
           <div className="container-site">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-              <div>
-                <h1 className="text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-4">
-                  {"Kikuyu's Trusted"}<br />
-                  <span className="text-primary">Electronics Shop.</span>
-                </h1>
-                <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
-                  Phones, TVs, laptops, speakers, kitchen appliances and more
-                  available in Kikuyu Town at fair prices.
-                </p>
-                <div className="flex flex-wrap gap-3 mb-8">
-                  <Link href="/shop"
-                    className="inline-flex items-center gap-2 h-12 px-6 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-colors text-sm">
-                    Shop Now
-                  </Link>
-                  <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 h-12 px-6 bg-white border border-border text-dark font-semibold rounded-full hover:border-primary hover:text-primary transition-colors text-sm">
-                    WhatsApp Us
-                  </a>
-                </div>
-              </div>
+            <div>
+  {settings.hero_title ? (
+    <h1 className="text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-4">
+      {settings.hero_title}
+    </h1>
+  ) : null}
+
+  {settings.hero_subtitle ? (
+    <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
+      {settings.hero_subtitle}
+    </p>
+  ) : null}
+
+  <div className="flex flex-wrap gap-3 mb-8">
+    <Link href="/shop"
+      className="inline-flex items-center gap-2 h-12 px-6 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-colors text-sm">
+      Shop Now
+    </Link>
+    <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
+      target="_blank" rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 h-12 px-6 bg-white border border-border text-dark font-semibold rounded-full hover:border-primary hover:text-primary transition-colors text-sm">
+      WhatsApp Us
+    </a>
+  </div>
+
+</div>
 
               <div className="relative rounded-xl overflow-hidden border border-border bg-surface aspect-[4/3]">
                 <Image
