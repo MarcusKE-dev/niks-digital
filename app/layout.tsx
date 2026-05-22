@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default:  'Niks Digital Connections – Electronics Shop | Kikuyu Town',
+    default: 'Niks Digital Connections – Electronics Shop | Kikuyu Town',
     template: '%s | Niks Digital Connections',
   },
   description:
@@ -22,10 +22,10 @@ export const metadata: Metadata = {
   authors: [{ name: 'Niks Digital Connections' }],
   creator: 'Niks Digital Connections',
   openGraph: {
-    type:        'website',
-    locale:      'en_KE',
-    siteName:    'Niks Digital Connections',
-    title:       'Niks Digital Connections – Electronics Shop Kikuyu',
+    type: 'website',
+    locale: 'en_KE',
+    siteName: 'Niks Digital Connections',
+    title: 'Niks Digital Connections – Electronics Shop Kikuyu',
     description: 'Phones, TVs, laptops, speakers and more. Kikuyu Town, Kiambu.',
   },
   robots: { index: true, follow: true },
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  width:        'device-width',
+  width: 'device-width',
   initialScale: 1,
-  themeColor:   '#CC0000',
+  themeColor: '#CC0000',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -49,22 +49,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type':    'ElectronicsStore',
-              name:       'Niks Digital Connections',
+              '@type': 'ElectronicsStore',
+              name: 'Niks Digital Connections',
               description: 'Electronics and phone accessories shop in Kikuyu Town, Kiambu.',
-              telephone:  '+254700000001',
+              telephone: '+254700000001',
               address: {
-                '@type':         'PostalAddress',
-                streetAddress:   'Kikuyu Town Centre',
+                '@type': 'PostalAddress',
+                streetAddress: 'Kikuyu Town Centre',
                 addressLocality: 'Kikuyu',
-                addressRegion:   'Kiambu',
-                addressCountry:  'KE',
+                addressRegion: 'Kiambu',
+                addressCountry: 'KE',
               },
               openingHoursSpecification: {
-                '@type':    'OpeningHoursSpecification',
-                dayOfWeek:  ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-                opens:      '08:00',
-                closes:     '19:00',
+                '@type': 'OpeningHoursSpecification',
+                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                opens: '08:00',
+                closes: '19:00',
               },
               paymentAccepted: ['M-Pesa', 'Cash', 'Credit Card'],
               priceRange: 'KES 500 – KES 150,000',
@@ -80,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 import type { ReactNode } from 'react'
-import { Toaster }        from '@/components/ui/Toaster'
+import { Toaster } from '@/components/ui/Toaster'
 
 function Providers({ children }: { children: ReactNode }) {
   return (
