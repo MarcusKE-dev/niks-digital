@@ -1,57 +1,59 @@
 'use client'
 
-// ════════════════════════════════════════════════════════════
-// MOBILE MENU — Full-screen slide-in drawer for mobile nav
-// Triggered by the hamburger button in the Navbar.
-// ════════════════════════════════════════════════════════════
-
-import { useEffect, useRef } from 'react'
-import Link                  from 'next/link'
-import { usePathname }       from 'next/navigation'
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   X, Home, ShoppingBag, Info, Phone,
   Tv2, Refrigerator, FlameKindling, Laptop,
   Smartphone, Music2, Camera, UtensilsCrossed,
   MessageCircle, ChevronRight, Zap, Watch,
 } from 'lucide-react'
-import { cn }            from '@/lib/utils'
-import { useCartCount }  from '@/store/cartStore'
+import { cn } from '@/lib/utils'
+import { useCartCount } from '@/store/cartStore'
 
 // ── TYPES ─────────────────────────────────────────────────────
-
 interface MobileMenuProps {
-  isOpen:   boolean
-  onClose:  () => void
+  isOpen: boolean
+  onClose: () => void
 }
 
 // ── NAV DATA ─────────────────────────────────────────────────
-
 const MAIN_LINKS = [
-  { href: '/',        label: 'Home',     icon: Home },
-  { href: '/shop',    label: 'Shop',     icon: ShoppingBag },
-  { href: '/about',   label: 'About Us', icon: Info },
-  { href: '/contact', label: 'Contact',  icon: Phone },
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/shop', label: 'Shop', icon: ShoppingBag },
+  { href: '/about', label: 'About Us', icon: Info },
+  { href: '/contact', label: 'Contact', icon: Phone },
 ] as const
 
 const CATEGORY_LINKS = [
-  { href: '/shop?category=phones',      label: 'Phones & Accessories',  icon: Smartphone },
-  { href: '/shop?category=computers',   label: 'Computer Accessories',   icon: Laptop },
-  { href: '/shop?category=tvs',         label: 'Televisions',            icon: Tv2 },
-  { href: '/shop?category=audio',       label: 'Audio & Speakers',       icon: Music2 },
-  { href: '/shop?category=kitchen',     label: 'Kitchen Appliances',     icon: UtensilsCrossed },
-  { href: '/shop?category=electronics', label: 'Basic Electronics',      icon: Zap },
-  { href: '/shop?category=wearables',   label: 'Smart Watches',          icon: Watch },
+  { href: '/shop?category=phones', label: 'Phones & Accessories', icon: Smartphone },
+  { href: '/shop?category=computers', label: 'Computer Accessories', icon: Laptop },
+  { href: '/shop?category=tvs', label: 'Televisions', icon: Tv2 },
+  { href: '/shop?category=audio', label: 'Audio & Speakers', icon: Music2 },
+  { href: '/shop?category=kitchen', label: 'Kitchen Appliances', icon: UtensilsCrossed },
+  { href: '/shop?category=electronics', label: 'Basic Electronics', icon: Zap },
+  { href: '/shop?category=wearables', label: 'Smart Watches', icon: Watch },
 ] as const
 
 // ── COMPONENT ─────────────────────────────────────────────────
-
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
-  const pathname   = usePathname()
-  const cartCount  = useCartCount()
-  const drawerRef  = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+  const cartCount = useCartCount()
+  const drawerRef = useRef<HTMLDivElement>(null)
+
+  // Dark mode state
+  const [dark, setDark] = useState(false)
+
+  const toggleDark = () => {
+    setDark((d) => !d)
+    document.documentElement.classList.toggle('dark')
+  }
 
   // Close on route change
-  useEffect(() => { onClose() }, [pathname])
+  useEffect(() => {
+    onClose()
+  }, [pathname, onClose])
 
   // Close on Escape key
   useEffect(() => {
@@ -70,7 +72,9 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     } else {
       document.body.style.overflow = ''
     }
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [isOpen])
 
   // Trap focus inside drawer
@@ -84,7 +88,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
   return (
     <>
-      {/* ── BACKDROP ── */}
+      {/* BACKDROP */}
       <div
         aria-hidden="true"
         onClick={onClose}
@@ -95,7 +99,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         )}
       />
 
-      {/* ── DRAWER ── */}
+      {/* DRAWER */}
       <div
         ref={drawerRef}
         role="dialog"
@@ -120,15 +124,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               Connection
             </span>
           </Link>
-
           <button
             onClick={onClose}
             aria-label="Close menu"
-            className={cn(
-              'w-8 h-8 rounded-lg flex items-center justify-center',
-              'text-muted hover:text-dark hover:bg-surface',
-              'transition-colors duration-fast'
-            )}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-dark hover:bg-surface transition-colors duration-fast"
           >
             <X size={20} />
           </button>
@@ -136,7 +135,6 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto scrollbar-hide py-4">
-
           {/* Main nav links */}
           <nav aria-label="Main navigation">
             <ul>
@@ -194,22 +192,30 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       'transition-colors duration-fast group'
                     )}
                   >
-                    <Icon
-                      size={16}
-                      className="flex-shrink-0 text-muted group-hover:text-primary transition-colors"
-                      aria-hidden
-                    />
+                    <Icon size={16} className="flex-shrink-0 text-muted group-hover:text-primary transition-colors" aria-hidden />
                     <span>{label}</span>
-                    <ChevronRight
-                      size={14}
-                      className="ml-auto text-muted opacity-0 group-hover:opacity-100 transition-opacity"
-                      aria-hidden
-                    />
+                    <ChevronRight size={14} className="ml-auto text-muted opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden />
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
+        </div>
+
+        {/* Dark Mode Toggle */}
+        <div className="mx-5 my-3 border-t border-border pt-4">
+          <button
+            onClick={toggleDark}
+            className="flex items-center justify-between w-full px-2 py-3 text-sm font-medium text-dark hover:text-primary transition-colors"
+          >
+            <span className="flex items-center gap-3">
+              <span>{dark ? '☀️' : '🌙'}</span>
+              <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
+            </span>
+            <span className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 ${dark ? 'bg-primary' : 'bg-gray-300'}`}>
+              <span className={`w-4 h-4 bg-white rounded-full transition-transform ${dark ? 'translate-x-4' : 'translate-x-0'}`} />
+            </span>
+          </button>
         </div>
 
         {/* Footer: WhatsApp CTA */}
@@ -219,20 +225,13 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}
-            className={cn(
-              'flex items-center justify-center gap-2 w-full',
-              'py-3 rounded-full',
-              'bg-whatsapp text-white text-sm font-semibold',
-              'hover:bg-green-600 transition-colors duration-fast',
-              'no-tap-highlight'
-            )}
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-whatsapp text-white text-sm font-semibold hover:bg-green-600 transition-colors duration-fast no-tap-highlight"
           >
             <MessageCircle size={18} aria-hidden />
             Chat with Us on WhatsApp
           </a>
-
           <p className="text-center text-xs text-muted mt-3">
-            Westlands, Nairobi · Mon–Sun 8am–7pm
+            Kikuyu Town · Mon–Sun 7am–10pm
           </p>
         </div>
       </div>
