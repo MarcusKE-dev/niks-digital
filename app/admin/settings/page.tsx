@@ -58,10 +58,13 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-extrabold text-dark mb-8">Site Settings</h1>
 
       <div className="bg-white border border-border rounded-xl p-6 space-y-6">
-        <div className="bg-white border border-border rounded-xl p-6 space-y-5 mt-6">
-  <h2 className="font-bold text-dark border-b border-border pb-3">Category Photos</h2>
-  <p className="text-xs text-muted">Upload a photo for each category. Recommended size: 300x200px.</p>
-
+<div className="bg-white border border-border rounded-xl p-6 space-y-4 mt-6">
+  <h2 className="font-bold text-dark border-b border-border pb-3">
+    Category Photos
+  </h2>
+  <p className="text-xs text-muted">
+    Upload a photo for each category. Recommended: 400x300px.
+  </p>
   {[
     { slug: 'phones',      label: 'Phones & Accessories' },
     { slug: 'computers',   label: 'Computer Accessories'  },
