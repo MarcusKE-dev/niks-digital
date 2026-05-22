@@ -74,7 +74,7 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
       <Navbar />
       <main>
 
-        <section className="bg-white py-8 lg:py-12">
+        <section className="bg-white py-4 lg:py-8">
           <div className="container-site">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
@@ -97,13 +97,6 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
                     WhatsApp Us
                   </a>
                 </div>
-                <div className="flex flex-wrap gap-x-5 gap-y-1.5">
-                  {['Free Kikuyu Delivery', 'M-Pesa Accepted', 'Genuine Products'].map(t => (
-                    <span key={t} className="text-xs text-muted flex items-center gap-1.5">
-                      <span className="text-success font-bold">✓</span> {t}
-                    </span>
-                  ))}
-                </div>
               </div>
 
               <div className="relative rounded-xl overflow-hidden border border-border bg-surface aspect-[4/3]">
@@ -120,23 +113,7 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
-        <section className="bg-surface border-y border-border py-10">
-          <div className="container-site">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              {FEATURES.map(f => (
-                <div key={f.title} className="flex items-start gap-3">
-                  <span className="text-2xl flex-shrink-0 mt-0.5">{f.icon}</span>
-                  <div>
-                    <p className="text-sm font-bold text-dark">{f.title}</p>
-                    <p className="text-xs text-muted mt-0.5 leading-snug">{f.sub}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-white section-padding">
+        <section className="bg-white py-8 lg:py-12">
           <div className="container-site">
             <div className="mb-8">
               <h2 className="section-title">Shop by Category</h2>
@@ -159,7 +136,7 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
-        <section className="bg-surface section-padding">
+        <section className="bg-surface py-8 lg:py-12">
           <div className="container-site">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8 gap-4">
               <div>
@@ -193,7 +170,23 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
-        <section className="bg-white section-padding">
+         <section className="bg-surface border-y border-border py-10">
+          <div className="container-site">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              {FEATURES.map(f => (
+                <div key={f.title} className="flex items-start gap-3">
+                  <span className="text-2xl flex-shrink-0 mt-0.5">{f.icon}</span>
+                  <div>
+                    <p className="text-sm font-bold text-dark">{f.title}</p>
+                    <p className="text-xs text-muted mt-0.5 leading-snug">{f.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white py-8 lg:py-12">
           <div className="container-site">
             <div className="text-center mb-10">
               <h2 className="section-title">What Our Customers Say</h2>
