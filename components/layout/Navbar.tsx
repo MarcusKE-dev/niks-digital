@@ -1,16 +1,6 @@
 'use client'
 
 // ════════════════════════════════════════════════════════════
-// NAVBAR — Main site navigation
-//
-// Structure (desktop):
-//   Row 1: Logo | Search Bar | WhatsApp | Cart
-//   Row 2: Category strip (horizontal scroll)
-//
-// Behaviour:
-//   - Sticky at top, z-sticky
-//   - Adds bottom shadow on scroll
-//   - Mobile: Row 1 compressed, hamburger replaces category links
 // ════════════════════════════════════════════════════════════
 
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -106,16 +96,13 @@ export function Navbar() {
             </button>
 
             {/* ── LOGO ── */}
-            <Link
-              href="/"
-              className="flex-shrink-0 flex flex-col leading-none group"
-              aria-label="Niks Digital Connections — Home"
-            >
-              <span className="font-extrabold text-2xl text-dark group-hover:text-dark transition-colors">
-                Niks Digital&nbsp;<br></br><span className="text-primary">Connections</span>
-              </span>
-             
-            </Link>
+            <Link href="/" aria-label="Niks Digital Connections — Home">
+  <img
+    src="/logo.png"
+    alt="Niks Digital Connections"
+    className="h-30 w-auto"
+  />
+</Link>
 
             {/* ── SEARCH BAR (desktop) ── */}
             <form
