@@ -113,6 +113,21 @@ function CategoryImageUploader({ slug, label }: { slug: string; label: string })
   const [preview,   setPreview]   = useState('')
   const toast = useToast()
 
+  // Load existing image on mount
+  useEffect(() => {
+    supabaseBrowser
+      .from('site_settings')
+      .select('value')
+      .eq('key', `category_image_${slug}`)
+      .single()
+      .then(({ data }) => {
+        if (data?.value && !data.value.startsWith('/categories/')) {
+          setPreview(data.value)
+        }
+      })
+  }, [slug])
+
+
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
