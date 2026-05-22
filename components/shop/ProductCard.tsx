@@ -47,7 +47,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
       aria-label={`View ${product.name}`}
     >
       {/* ── IMAGE AREA ── */}
-      <div className="relative bg-surface overflow-hidden" style={{ height: 220 }}>
+      <div className="relative bg-surface overflow-hidden" style={{ height: 180 }}>
         <Image
           src={productImageSrc(product.thumbnail)}
           alt={`${product.name} — available at Niks Digital Connections`}
