@@ -22,14 +22,13 @@ const QUICK_LINKS = [
 ] as const
 
 const CATEGORY_LINKS = [
-  { href: '/shop?category=televisions',   label: 'Televisions' },
-  { href: '/shop?category=refrigerators', label: 'Refrigerators & Freezers' },
-  { href: '/shop?category=cookers',       label: 'Cookers & Ovens' },
-  { href: '/shop?category=laptops',       label: 'Laptops & Computers' },
-  { href: '/shop?category=phones',        label: 'Mobile Phones' },
-  { href: '/shop?category=audio',         label: 'Audio & Speakers' },
-  { href: '/shop?category=cameras',       label: 'Cameras' },
-  { href: '/shop?category=kitchen',       label: 'Kitchen Appliances' },
+  { href: '/shop?category=phones',      label: 'Phones & Accessories'  },
+  { href: '/shop?category=computers',   label: 'Computer Accessories'  },
+  { href: '/shop?category=tvs',         label: 'Televisions'           },
+  { href: '/shop?category=audio',       label: 'Audio & Speakers'      },
+  { href: '/shop?category=kitchen',     label: 'Kitchen Appliances'    },
+  { href: '/shop?category=electronics', label: 'Basic Electronics'     },
+  { href: '/shop?category=wearables',   label: 'Smart Watches'         },
 ] as const
 
 const SOCIAL_LINKS = [
