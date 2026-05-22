@@ -36,7 +36,7 @@ async function getProducts() {
     .select('id,name,slug,brand,price,old_price,thumbnail,badge,is_featured,stock_qty,rating,review_count,category_id')
     .eq('is_active', true)
     .order('review_count', { ascending: false })
-    .limit(20)
+    .limit(40)
   return (data ?? []) as ProductSummary[]
 }
 
@@ -51,10 +51,10 @@ async function getSettings() {
 export default async function HomePage() {
   const [products, settings] = await Promise.all([getProducts(), getSettings()])
 
-  const featured    = products.filter(p => p.is_featured).slice(0, 5)
-  const bestSellers = products.slice(0, 10)
-  const newArrivals = products.filter(p => p.badge === 'new').slice(0, 5)
-  const onSale      = products.filter(p => p.badge === 'sale').slice(0, 5)
+const featured    = products.filter(p => p.is_featured).slice(0, 10)
+const bestSellers = products.slice(0, 20)
+const newArrivals = products.filter(p => p.badge === 'new').slice(0, 10)
+const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
 
   const CATEGORIES = [
     { slug: 'phones',      label: 'Phones & Accessories', icon: '📱', count: '50+' },
