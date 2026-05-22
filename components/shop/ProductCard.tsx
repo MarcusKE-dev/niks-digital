@@ -86,7 +86,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
       </div>
 
       {/* ── CARD BODY ── */}
-      <div className="p-3">
+      <div className="p-2.5">
         {/* Brand */}
         {product.brand && (
           <p className="text-2xs font-semibold uppercase tracking-wider text-muted mb-1">
