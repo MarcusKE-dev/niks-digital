@@ -55,9 +55,12 @@ async function getData(params: PageProps['searchParams']) {
     if (cat) query = query.eq('category_id', cat.id)
   }
 
-  if (params.search) {
-    query = query.ilike('name', `%${params.search}%`)
-  }
+ if (params.search) {
+  const term = params.search.trim()
+  query = query.or(
+    `name.ilike.%${term}%,brand.ilike.%${term}%,description.ilike.%${term}%`
+  )
+}
 
   if (params.min) query = query.gte('price', Number(params.min))
   if (params.max) query = query.lte('price', Number(params.max))
