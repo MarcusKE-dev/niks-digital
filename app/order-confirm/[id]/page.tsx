@@ -1,9 +1,9 @@
-import { notFound }           from 'next/navigation'
-import Link                    from 'next/link'
-import type { Metadata }       from 'next'
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import type { Metadata } from 'next'
 import { createSupabaseServer } from '@/lib/supabase-server'
-import { Navbar }               from '@/components/layout/Navbar'
-import { Footer }               from '@/components/layout/Footer'
+import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
 import { formatKES, formatDate } from '@/lib/utils'
 
 export const metadata: Metadata = { title: 'Order Confirmed' }
@@ -27,7 +27,6 @@ export default async function OrderConfirmPage({ params }: PageProps) {
       <Navbar />
       <main className="bg-surface min-h-screen py-10">
         <div className="container-site max-w-2xl">
-
           {/* Success header */}
           <div className="bg-white border border-border rounded-xl p-8 text-center mb-5">
             <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
@@ -36,7 +35,9 @@ export default async function OrderConfirmPage({ params }: PageProps) {
               </svg>
             </div>
             <h1 className="text-2xl font-extrabold text-dark mb-1">Order Confirmed!</h1>
-            <p className="text-sm text-muted mb-3">Thank you, <strong className="text-dark">{order.customer_name}</strong>. Your order has been received.</p>
+            <p className="text-sm text-muted mb-3">
+              Thank you, <strong className="text-dark">{order.customer_name}</strong>. Your order has been received.
+            </p>
             <div className="inline-flex items-center gap-2 bg-surface border border-border rounded-full px-4 py-2">
               <span className="text-xs text-muted">Order Number</span>
               <span className="text-sm font-extrabold text-dark">{order.order_number}</span>
@@ -46,7 +47,9 @@ export default async function OrderConfirmPage({ params }: PageProps) {
           {/* What's next */}
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-5 text-sm text-dark">
             <p className="font-bold mb-1">What happens next?</p>
-            <p className="text-muted leading-relaxed">Our team will call you on <strong className="text-dark">{order.customer_phone}</strong> within 1 hour to confirm delivery details and timing.</p>
+            <p className="text-muted leading-relaxed">
+              Our team will call you on <strong className="text-dark">{order.customer_phone}</strong> within 1 hour to confirm delivery details and timing.
+            </p>
           </div>
 
           {/* Order details */}
@@ -55,25 +58,30 @@ export default async function OrderConfirmPage({ params }: PageProps) {
               <h2 className="font-extrabold text-dark">Order Details</h2>
               <p className="text-xs text-muted mt-0.5">{formatDate(order.created_at)}</p>
             </div>
-
-            {/* Items */}
             <div className="divide-y divide-border">
               {items.map((item: any) => (
                 <div key={item.id} className="flex gap-3 p-4">
                   <div className="flex-1">
                     <p className="text-sm font-medium text-dark">{item.product_name}</p>
-                    <p className="text-xs text-muted mt-0.5">Qty: {item.quantity} × {formatKES(item.unit_price)}</p>
+                    <p className="text-xs text-muted mt-0.5">
+                      Qty: {item.quantity} × {formatKES(item.unit_price)}
+                    </p>
                   </div>
                   <p className="text-sm font-bold text-dark">{formatKES(item.total_price)}</p>
                 </div>
               ))}
             </div>
-
-            {/* Totals */}
             <div className="p-4 bg-surface border-t border-border space-y-1.5">
-              <div className="flex justify-between text-sm"><span className="text-muted">Subtotal</span><span>{formatKES(order.subtotal)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-muted">Delivery</span><span>{order.delivery_fee === 0 ? 'Free' : formatKES(order.delivery_fee)}</span></div>
-              <div className="flex justify-between font-extrabold text-dark pt-1 border-t border-border"><span>Total</span><span className="text-primary">{formatKES(order.total)}</span></div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Subtotal</span><span>{formatKES(order.subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Delivery</span>
+                <span>As Confirmed</span>
+              </div>
+              <div className="flex justify-between font-extrabold text-dark pt-1 border-t border-border">
+                <span>Total</span><span className="text-primary">{formatKES(order.total)}</span>
+              </div>
             </div>
           </div>
 
@@ -94,18 +102,30 @@ export default async function OrderConfirmPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/shop" className="h-11 px-6 bg-primary text-white font-semibold text-sm rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors">
-              Continue Shopping
-            </Link>
-            <Link
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}?text=Hi! My order number is ${order.order_number}. I'd like to follow up.`}
-              target="_blank" rel="noopener noreferrer"
-              className="h-11 px-6 bg-whatsapp text-white font-semibold text-sm rounded-full flex items-center justify-center gap-2 hover:bg-green-600 transition-colors"
+          {/* Track on WhatsApp */}
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-5">
+            <p className="font-bold text-dark mb-1">📦 Track Your Order</p>
+            <p className="text-sm text-muted leading-relaxed mb-3">
+              Your order number is <strong className="text-dark font-mono">{order.order_number}</strong>.
+              Send this number on WhatsApp to get live updates on your order status.
+            </p>
+            <a
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Hi! I'd like to track my order. Order number: ${order.order_number}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-11 px-4 bg-green-500 text-white font-semibold text-sm rounded-full flex items-center justify-center gap-2 hover:bg-green-600 transition-colors"
             >
-              💬 Chat About My Order
-            </Link>
+              💬 Track on WhatsApp
+            </a>
           </div>
+
+          {/* Back Home button */}
+          <Link
+            href="/"
+            className="h-11 px-4 bg-primary text-white font-semibold text-sm rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors"
+          >
+            Back Home
+          </Link>
         </div>
       </main>
       <Footer />

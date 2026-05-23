@@ -117,15 +117,8 @@ export const useCartStore = create<CartState>()(
        * Otherwise returns the default fee (area-specific fee is applied
        * at checkout when the customer selects their delivery area).
        */
-      deliveryFee: () => {
-        const sub = get().subtotal()
-        if (sub >= FREE_DELIVERY_THRESHOLD) return 0
-        return DEFAULT_DELIVERY_FEE
-      },
+      deliveryFee: () => 0,
 
-      /**
-       * Order total = subtotal + delivery fee.
-       */
       total: () => {
         return get().subtotal() + get().deliveryFee()
       },

@@ -234,7 +234,7 @@ export function getPaymentStatusColor(status: PaymentStatus): string {
  */
 export function productImageSrc(url: string | null | undefined): string {
   if (!url || url.trim() === '') {
-    return '/images/placeholder-product.png'
+    return '/images/placeholder-product.svg'
   }
   return url
 }

@@ -282,17 +282,9 @@ export interface Modal {
 // ── DELIVERY AREAS ───────────────────────────────────────────
 
 export const DELIVERY_AREAS = [
-  { value: 'kikuyu',       label: 'Kikuyu Town',           fee: 0    },
-  { value: 'kawangware',   label: 'Kawangware',            fee: 200  },
-  { value: 'ruthimitu',    label: 'Ruthimitu / Dagoretti',  fee: 200  },
-  { value: 'cbd',          label: 'Nairobi CBD',            fee: 300  },
-  { value: 'westlands',    label: 'Westlands / Parklands',  fee: 300  },
-  { value: 'kasarani',     label: 'Kasarani / Thika Rd',    fee: 400  },
-  { value: 'karen',        label: 'Karen / Langata',        fee: 400  },
-  { value: 'kitengela',    label: 'Kitengela / Ongata',     fee: 500  },
-  { value: 'limuru',       label: 'Limuru / Tigoni',        fee: 300  },
-  { value: 'ruiru',        label: 'Ruiru / Juja',           fee: 500  },
-  { value: 'other',        label: 'Other (contact us)',     fee: 0    },
+  { value: 'kikuyu',    label: 'Kikuyu & Surroundings', fee: 0    },
+  { value: 'nairobi',   label: 'Greater Nairobi',        fee: 300  },
+  { value: 'countrywide', label: 'Countrywide',          fee: 0    },
 ] as const
 
 export type DeliveryArea = typeof DELIVERY_AREAS[number]['value']

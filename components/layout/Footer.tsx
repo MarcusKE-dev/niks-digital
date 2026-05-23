@@ -85,9 +85,9 @@ const CONTACT_ITEMS = [
 ] as const
 
 const LEGAL_LINKS = [
-  { href: '/privacy-policy', label: 'Privacy Policy' },
-  { href: '/terms',          label: 'Terms of Service' },
-  { href: '/returns',        label: 'Returns Policy' },
+  { href: '/legal',   label: 'Privacy Policy'  },
+  { href: '/legal',   label: 'Terms of Service' },
+  { href: '/legal',   label: 'Returns Policy'   },
 ] as const
 
 // ── COMPONENT ─────────────────────────────────────────────────

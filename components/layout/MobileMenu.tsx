@@ -1,237 +1,158 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import {
-  X, Home, ShoppingBag, Info, Phone,
-  Tv2, Refrigerator, FlameKindling, Laptop,
-  Smartphone, Music2, Camera, UtensilsCrossed,
-  MessageCircle, ChevronRight, Zap, Watch,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useCartCount } from '@/store/cartStore'
+import { useEffect, useRef } from 'react'
+import Link                  from 'next/link'
+import { usePathname }       from 'next/navigation'
 
-// ── TYPES ─────────────────────────────────────────────────────
 interface MobileMenuProps {
-  isOpen: boolean
+  isOpen:  boolean
   onClose: () => void
 }
 
-// ── NAV DATA ─────────────────────────────────────────────────
 const MAIN_LINKS = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/shop', label: 'Shop', icon: ShoppingBag },
-  { href: '/about', label: 'About Us', icon: Info },
-  { href: '/contact', label: 'Contact', icon: Phone },
+  { href: '/',         label: 'Home',      icon: '🏠' },
+  { href: '/shop',     label: 'Shop',      icon: '🛍️' },
+  { href: '/wishlist', label: 'Wishlist',  icon: '❤️'  },
+  { href: '/about',    label: 'About Us',  icon: 'ℹ️'  },
+  { href: '/contact',  label: 'Contact',   icon: '📞' },
 ] as const
 
 const CATEGORY_LINKS = [
-  { href: '/shop?category=phones', label: 'Phones & Accessories', icon: Smartphone },
-  { href: '/shop?category=computers', label: 'Computer Accessories', icon: Laptop },
-  { href: '/shop?category=tvs', label: 'Televisions', icon: Tv2 },
-  { href: '/shop?category=audio', label: 'Audio & Speakers', icon: Music2 },
-  { href: '/shop?category=kitchen', label: 'Kitchen Appliances', icon: UtensilsCrossed },
-  { href: '/shop?category=electronics', label: 'Basic Electronics', icon: Zap },
-  { href: '/shop?category=wearables', label: 'Smart Watches', icon: Watch },
+  { href: '/shop?category=phones',      label: 'Phones & Accessories'  },
+  { href: '/shop?category=computers',   label: 'Computer Accessories'  },
+  { href: '/shop?category=tvs',         label: 'Televisions'           },
+  { href: '/shop?category=audio',       label: 'Audio & Speakers'      },
+  { href: '/shop?category=kitchen',     label: 'Kitchen Appliances'    },
+  { href: '/shop?category=electronics', label: 'Basic Electronics'     },
+  { href: '/shop?category=wearables',   label: 'Smart Watches'         },
 ] as const
 
-// ── COMPONENT ─────────────────────────────────────────────────
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const pathname = usePathname()
-  const cartCount = useCartCount()
   const drawerRef = useRef<HTMLDivElement>(null)
 
-  // Dark mode state
-  const [dark, setDark] = useState(false)
+  // Close on route change
+  useEffect(() => { onClose() }, [pathname])
 
-  const toggleDark = () => {
-    setDark((d) => !d)
+  // Escape key
+  useEffect(() => {
+    if (!isOpen) return
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', h)
+    return () => document.removeEventListener('keydown', h)
+  }, [isOpen, onClose])
+
+  // Lock scroll
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
+  function toggleDark() {
     document.documentElement.classList.toggle('dark')
   }
 
-  // Close on route change
-  useEffect(() => {
-    onClose()
-  }, [pathname, onClose])
-
-  // Close on Escape key
-  useEffect(() => {
-    if (!isOpen) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [isOpen, onClose])
-
-  // Lock body scroll when open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  // Trap focus inside drawer
-  useEffect(() => {
-    if (!isOpen || !drawerRef.current) return
-    const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])'
-    )
-    focusable[0]?.focus()
-  }, [isOpen])
-
   return (
     <>
-      {/* BACKDROP */}
-      <div
-        aria-hidden="true"
-        onClick={onClose}
-        className={cn(
-          'fixed inset-0 z-overlay bg-black/50 backdrop-blur-sm',
-          'transition-opacity duration-300 ease-smooth',
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        )}
-      />
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
 
-      {/* DRAWER */}
+      {/* Drawer */}
       <div
         ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className={cn(
-          'fixed top-0 left-0 bottom-0 z-drawer',
-          'w-[85vw] max-w-[340px]',
-          'bg-white shadow-drawer',
-          'flex flex-col',
-          'transition-transform duration-300 ease-smooth',
+        className={`fixed top-0 left-0 bottom-0 z-50 w-72 bg-white shadow-xl flex flex-col lg:hidden transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        )}
+        }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <Link href="/" onClick={onClose} className="flex flex-col leading-none">
-            <span className="font-extrabold text-lg text-dark">
+            <span className="font-extrabold text-xl text-dark">
               Niks <span className="text-primary">Digital</span>
             </span>
             <span className="text-2xs text-muted uppercase tracking-widest mt-0.5">
-              Connection
+              Connections
             </span>
           </Link>
           <button
             onClick={onClose}
             aria-label="Close menu"
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-dark hover:bg-surface transition-colors duration-fast"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:text-dark hover:bg-surface transition-colors text-xl font-light"
           >
-            <X size={20} />
+            ✕
           </button>
         </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide py-4">
-          {/* Main nav links */}
-          <nav aria-label="Main navigation">
-            <ul>
-              {MAIN_LINKS.map(({ href, label, icon: Icon }) => {
-                const isActive = pathname === href
-                return (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      onClick={onClose}
-                      className={cn(
-                        'flex items-center gap-3 px-5 py-3.5',
-                        'text-sm font-semibold',
-                        'transition-colors duration-fast',
-                        isActive
-                          ? 'text-primary bg-orange-50 border-r-2 border-primary'
-                          : 'text-dark hover:bg-surface hover:text-primary'
-                      )}
-                    >
-                      <Icon size={18} className="flex-shrink-0" aria-hidden />
-                      <span>{label}</span>
-                      {label === 'Shop' && cartCount > 0 && (
-                        <span className="ml-auto bg-primary text-white text-2xs font-bold px-1.5 py-0.5 rounded-full">
-                          {cartCount}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto py-4">
+
+          {/* Main links */}
+          <nav aria-label="Main">
+            {MAIN_LINKS.map(({ href, label, icon }) => (
+              <Link key={href} href={href} onClick={onClose}
+                className="flex items-center gap-3 px-5 py-3.5 text-sm font-semibold text-dark hover:bg-surface hover:text-primary transition-colors">
+                <span className="w-5 text-center">{icon}</span>
+                {label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Divider */}
           <div className="mx-5 my-3 border-t border-border" />
 
-          {/* Category section */}
-          <div className="px-5 mb-2">
-            <p className="text-2xs font-bold uppercase tracking-widest text-muted mb-2">
-              Shop by Category
-            </p>
-          </div>
-
-          <nav aria-label="Product categories">
-            <ul>
-              {CATEGORY_LINKS.map(({ href, label, icon: Icon }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    onClick={onClose}
-                    className={cn(
-                      'flex items-center gap-3 px-5 py-3',
-                      'text-sm text-dark',
-                      'hover:bg-surface hover:text-primary',
-                      'transition-colors duration-fast group'
-                    )}
-                  >
-                    <Icon size={16} className="flex-shrink-0 text-muted group-hover:text-primary transition-colors" aria-hidden />
-                    <span>{label}</span>
-                    <ChevronRight size={14} className="ml-auto text-muted opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Categories */}
+          <p className="px-5 text-2xs font-bold uppercase tracking-widest text-muted mb-2">
+            Shop by Category
+          </p>
+          <nav aria-label="Categories">
+            {CATEGORY_LINKS.map(({ href, label }) => (
+              <Link key={href} href={href} onClick={onClose}
+                className="flex items-center gap-3 px-5 py-3 text-sm text-dark hover:bg-surface hover:text-primary transition-colors">
+                {label}
+              </Link>
+            ))}
           </nav>
-        </div>
 
-        {/* Dark Mode Toggle */}
-        <div className="mx-5 my-3 border-t border-border pt-4">
+          <div className="mx-5 my-3 border-t border-border" />
+
+          {/* Dark mode toggle */}
           <button
             onClick={toggleDark}
-            className="flex items-center justify-between w-full px-2 py-3 text-sm font-medium text-dark hover:text-primary transition-colors"
+            className="flex items-center gap-3 px-5 py-3.5 w-full text-sm font-semibold text-dark hover:bg-surface transition-colors"
           >
-            <span className="flex items-center gap-3">
-              <span>{dark ? '☀️' : '🌙'}</span>
-              <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
-            </span>
-            <span className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 ${dark ? 'bg-primary' : 'bg-gray-300'}`}>
-              <span className={`w-4 h-4 bg-white rounded-full transition-transform ${dark ? 'translate-x-4' : 'translate-x-0'}`} />
-            </span>
+            <span className="w-5 text-center">🌙</span>
+            Dark Mode
           </button>
+
+          {/* Legal links */}
+          <Link href="/legal" onClick={onClose}
+            className="flex items-center gap-3 px-5 py-3 text-sm text-muted hover:text-primary transition-colors">
+            <span className="w-5 text-center">📋</span>
+            Privacy · Terms · Returns
+          </Link>
         </div>
 
-        {/* Footer: WhatsApp CTA */}
+        {/* Footer - WhatsApp link (FIXED: added missing <a tag) */}
         <div className="p-5 border-t border-border">
           <a
             href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-whatsapp text-white text-sm font-semibold hover:bg-green-600 transition-colors duration-fast no-tap-highlight"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-green-500 text-white text-sm font-semibold hover:bg-green-600 transition-colors"
           >
-            <MessageCircle size={18} aria-hidden />
-            Chat with Us on WhatsApp
+            💬 Chat on WhatsApp
           </a>
           <p className="text-center text-xs text-muted mt-3">
-            Kikuyu Town · Mon–Sun 7am–10pm
+            Kikuyu Town · Mon–Sun 8am–7pm
           </p>
         </div>
       </div>

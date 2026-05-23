@@ -48,15 +48,12 @@ export const checkoutSchema = z
       .or(z.literal(''))      // email is optional
       .optional(),
 
-    delivery_area: z
-      .enum(deliveryAreaValues as [string, ...string[]], {
-        errorMap: () => ({ message: 'Please select a delivery area' }),
-      }),
+    delivery_area: z.string().optional().default(''),
 
-    delivery_address: z
-      .string()
-      .min(10, 'Please enter your full delivery address (estate, house no., street)')
-      .max(500, 'Address is too long'),
+delivery_address: z
+  .string()
+  .min(5, 'Please enter your delivery location')
+  .max(500, 'Address is too long'),
 
     notes: z.string().max(500, 'Notes are too long').optional(),
 
@@ -64,7 +61,7 @@ export const checkoutSchema = z
       errorMap: () => ({ message: 'Please select a payment method' }),
     }),
 
-    mpesa_phone: kenyanPhone,
+mpesa_phone: z.string().optional().default(''),
   })
   .refine(
     // mpesa_phone is required when payment method is mpesa

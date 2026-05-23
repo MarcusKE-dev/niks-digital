@@ -12,8 +12,6 @@ import { FREE_DELIVERY_THRESHOLD } from '@/types'
 export default function CartPage() {
   const { items, removeItem, updateQty, subtotal, deliveryFee, total, totalItems } = useCartStore()
   const sub  = subtotal()
-  const fee  = deliveryFee()
-  const tot  = total()
   const free = qualifiesForFreeDelivery(sub)
 
   return (
@@ -78,7 +76,7 @@ export default function CartPage() {
                 ))}
               </div>
 
-              {/* ── SUMMARY ── */}
+              {/* ── SUMMARY (modified) ── */}
               <div className="bg-white border border-border rounded-xl p-5 sticky top-24" aria-label="Order summary">
                 <h2 className="font-extrabold text-dark text-base mb-5">Order Summary</h2>
 
@@ -87,26 +85,27 @@ export default function CartPage() {
                     <span className="text-muted">Subtotal ({totalItems()} items)</span>
                     <span className="font-semibold text-dark">{formatKES(sub)}</span>
                   </div>
+                  {/* Delivery fee line – replaced with information note */}
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted">Delivery fee</span>
-                    <span className={free ? 'text-success font-semibold' : 'font-semibold text-dark'}>
-                      {free ? 'FREE' : formatKES(fee)}
+                    <span className="text-muted">Delivery</span>
+                    <span className="text-xs text-muted text-right max-w-[180px] leading-snug">
+                      Confirmed after order placement
                     </span>
                   </div>
-                  {!free && (
-                    <p className="text-xs text-muted bg-surface rounded-lg p-2.5 leading-relaxed">
-                      Add <span className="font-bold text-dark">{formatKES(FREE_DELIVERY_THRESHOLD - sub)}</span> more to qualify for free delivery
-                    </p>
-                  )}
+                 
                 </div>
 
                 <hr className="border-border mb-4" />
-                <div className="flex justify-between font-extrabold text-dark mb-5">
-                  <span>Total</span>
-                  <span className="text-lg">{formatKES(tot)}</span>
+                {/* Total – shows only subtotal, with a note below */}
+                <div className="flex justify-between font-extrabold text-dark mb-2">
+                  <span>Subtotal</span>
+                  <span className="text-lg">{formatKES(sub)}</span>
                 </div>
+                <p className="text-xs text-muted mt-1">
+                <b>  + delivery fee confirmed after order placement </b>
+                </p>
 
-                <Link href="/checkout" className="block w-full h-12 bg-primary text-white font-bold text-sm rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors mb-3 shadow-btn-primary text-center">
+                <Link href="/checkout" className="block w-full h-12 bg-primary text-white font-bold text-sm rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors mb-3 shadow-btn-primary text-center mt-5">
                   Proceed to Checkout
                 </Link>
                 <Link href="/shop" className="block w-full h-10 text-center text-sm font-medium text-dark hover:text-primary transition-colors flex items-center justify-center">

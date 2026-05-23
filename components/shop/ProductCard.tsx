@@ -1,31 +1,32 @@
 'use client'
 
-import { useState }        from 'react'
-import Link                from 'next/link'
-import Image               from 'next/image'
-import { ShoppingCart, Heart } from 'lucide-react'
+import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { ShoppingCart } from 'lucide-react'
 import { cn, formatKES, calculateSavings, productImageSrc } from '@/lib/utils'
-import { useCartStore, useIsInCart }  from '@/store/cartStore'
-import { useToast }                   from '@/components/ui/Toaster'
-import { ProductBadge }               from '@/components/ui/Badge'
-import { StarRating }                 from '@/components/shop/StarRating'
-import type { ProductSummary }        from '@/types'
+import { useCartStore, useIsInCart } from '@/store/cartStore'
+import { useToast } from '@/components/ui/Toaster'
+import { ProductBadge } from '@/components/ui/Badge'
+import type { ProductSummary } from '@/types'
+import { useWishlistStore } from '@/store/wishlistStore'
 
 interface ProductCardProps {
-  product:   ProductSummary
+  product: ProductSummary
   className?: string
-  priority?:  boolean   // set true for above-the-fold cards
+  priority?: boolean
 }
 
 export function ProductCard({ product, className, priority = false }: ProductCardProps) {
-  const [qty, setQty]           = useState(1)
-  const [wishlisted, setWish]   = useState(false)
-  const addItem                 = useCartStore(s => s.addItem)
-  const inCart                  = useIsInCart(product.id)
-  const toast                   = useToast()
+  const [qty, setQty] = useState(1)
+  const addItem = useCartStore(s => s.addItem)
+  const inCart = useIsInCart(product.id)
+  const toast = useToast()
+  const { addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlistStore()
+  const isWishlisted = useWishlistStore(state => state.isWishlisted(product.id))
 
   const isOutOfStock = product.stock_qty === 0
-  const savings      = calculateSavings(product.price, product.old_price)
+  const savings = calculateSavings(product.price, product.old_price)
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault()
@@ -36,8 +37,14 @@ export function ProductCard({ product, className, priority = false }: ProductCar
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault()
-    setWish(w => !w)
-    toast.info(wishlisted ? 'Removed from wishlist' : 'Added to wishlist')
+    e.stopPropagation()
+    if (isWishlisted) {
+      removeFromWishlist(product.id)
+      toast.info('Removed from wishlist')
+    } else {
+      addToWishlist(product)
+      toast.success('Added to wishlist')
+    }
   }
 
   return (
@@ -46,8 +53,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
       className={cn('product-card-base block group focus-ring', className)}
       aria-label={`View ${product.name}`}
     >
-      {/* ── IMAGE AREA ── */}
-      <div className="relative bg-surface overflow-hidden" style={{ height: 180 }}>
+      <div className="relative bg-surface overflow-hidden" style={{ height: 150 }}>
         <Image
           src={productImageSrc(product.thumbnail)}
           alt={`${product.name} — available at Niks Digital Connections`}
@@ -57,25 +63,24 @@ export function ProductCard({ product, className, priority = false }: ProductCar
           loading={priority ? 'eager' : 'lazy'}
           priority={priority}
         />
-
-        {/* Badge */}
         <ProductBadge badge={product.badge} />
-
-        {/* Wishlist */}
         <button
           onClick={handleWishlist}
-          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          className={cn(
-            'absolute top-2 right-2 z-above',
-            'w-7 h-7 rounded-full flex items-center justify-center',
-            'bg-white shadow-card transition-colors duration-fast',
-            wishlisted ? 'text-red-500' : 'text-gray-300 hover:text-red-400'
-          )}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          className="absolute top-2 right-2 z-above w-7 h-7 flex items-center justify-center transition-transform duration-fast hover:scale-110"
         >
-          <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill={isWishlisted ? '#CC0000' : 'none'}
+            stroke={isWishlisted ? '#CC0000' : '#9CA3AF'}
+            strokeWidth={2}
+            className="transition-all duration-fast"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
         </button>
-
-        {/* Out of stock overlay */}
         {isOutOfStock && (
           <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
             <span className="text-xs font-bold text-danger uppercase tracking-wider bg-white px-3 py-1 rounded-full border border-danger/20">
@@ -85,83 +90,44 @@ export function ProductCard({ product, className, priority = false }: ProductCar
         )}
       </div>
 
-      {/* ── CARD BODY ── */}
-      <div className="p-2.5">
-        {/* Brand */}
+      <div className="p-3">
         {product.brand && (
           <p className="text-2xs font-semibold uppercase tracking-wider text-muted mb-1">
             {product.brand}
           </p>
         )}
-
-        {/* Product name */}
-        <h3 className="text-sm font-medium text-dark line-clamp-2 leading-snug mb-1.5 min-h-[2.5rem]">
+        <h3 className="text-xs font-medium text-dark line-clamp-2 leading-snug mb-1.5 min-h-[2rem]">
           {product.name}
         </h3>
 
-        {/* Stars */}
-        <StarRating
-          rating={product.rating}
-          reviewCount={product.review_count}
-          className="mb-2"
-        />
+        {/* Stars removed – as requested */}
 
-        {/* Price */}
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-md font-bold text-dark">
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-sm font-bold text-dark">
             {formatKES(product.price)}
           </span>
           {product.old_price && (
-            <span className="text-xs text-muted line-through">
+            <span className="text-2xs text-muted line-through">
               {formatKES(product.old_price)}
             </span>
           )}
         </div>
 
-        {savings && (
-          <p className="text-xs text-success font-medium mb-2">
-            Save {formatKES(savings.amount)} ({savings.percent}% off)
-          </p>
-        )}
-
-        {/* Qty + Add to cart */}
-        <div className="flex items-center gap-2 mt-auto">
-          {/* Qty selector */}
-          <select
-            value={qty}
-            onChange={e => setQty(Number(e.target.value))}
-            onClick={e => e.preventDefault()}
-            disabled={isOutOfStock}
-            aria-label="Quantity"
-            className={cn(
-              'h-9 w-16 text-sm border border-border rounded-md px-2',
-              'focus:outline-none focus:border-primary bg-white',
-              'disabled:opacity-40 disabled:cursor-not-allowed'
-            )}
-          >
-            {Array.from({ length: Math.min(product.stock_qty, 10) }, (_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-            {isOutOfStock && <option value={0}>0</option>}
-          </select>
-
-          {/* Add to cart */}
+        {/* Centered button – red always, narrower, centered */}
+        <div className="flex justify-center">
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
             aria-label={`Add ${product.name} to cart`}
             className={cn(
-              'flex-1 h-9 flex items-center justify-center gap-1.5',
-              'text-xs font-semibold rounded-full',
-              'border transition-all duration-normal',
-              'disabled:opacity-40 disabled:cursor-not-allowed',
-              inCart
-                ? 'bg-primary border-primary text-white'
-                : 'bg-white border-primary text-primary hover:bg-primary hover:text-white'
+              'flex items-center justify-center gap-1.5 h-9 px-4 text-xs font-bold rounded-full',
+              'bg-primary text-white hover:bg-primary-600',
+              'transition-all duration-normal disabled:opacity-40 disabled:cursor-not-allowed',
+              'w-auto min-w-[100px]'
             )}
           >
             <ShoppingCart size={13} aria-hidden />
-            {inCart ? 'In Cart' : 'Add to Cart'}
+            {isOutOfStock ? 'Out of Stock' : inCart ? 'In Cart' : 'Add to Cart'}
           </button>
         </div>
       </div>

@@ -56,7 +56,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to save order items' }, { status: 500 })
     }
 
-    return NextResponse.json({ orderId: order.id, order_number })
+    for (const item of items) {
+  if (item.product_id) {
+    await supabaseAdmin.rpc('decrement_stock', {
+      p_id: item.product_id,
+      qty:  item.quantity,
+    })
+  }
+}
+
+return NextResponse.json({ orderId: order.id, order_number })
 
   } catch (err) {
     console.error('[Orders] Unexpected error:', err)

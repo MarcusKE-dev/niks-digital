@@ -1,8 +1,4 @@
 /* ══════════════════════════════════════════════════════════
-   GLOBAL STYLES — Niks Digital Connection
-   All design tokens are in tailwind.config.ts.
-   This file handles: font import, CSS reset overrides,
-   base typography, scrollbar, and global animations.
    ══════════════════════════════════════════════════════════ */
 
 /* ── FONT IMPORT ─────────────────────────────────────────── */
@@ -24,7 +20,7 @@
 
   /* Smooth scrolling */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     -webkit-text-size-adjust: 100%;
     font-size: 16px;
   }
@@ -162,16 +158,15 @@
 
   /* ── Section wrapper */
   .section-padding {
-    padding-top: 64px;
-    padding-bottom: 64px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-top: 40px;
+    padding-bottom: 40px;
   }
-
-  @media (min-width: 1024px) {
-    .section-padding {
-      padding-top: 96px;
-      padding-bottom: 96px;
-    }
-  }
+}
 
   /* ── Product card */
   .product-card-base {
