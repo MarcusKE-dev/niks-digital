@@ -1,11 +1,17 @@
 'use client'
 
-import { useState }        from 'react'
-import { useRouter }       from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabaseBrowser } from '@/lib/supabase'
-import { useToast }        from '@/components/ui/Toaster'
+import { useToast } from '@/components/ui/Toaster'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { formatKES, getOrderStatusLabel, getPaymentStatusColor } from '@/lib/utils'
 import type { OrderStatus, PaymentStatus } from '@/types'
+import { ChevronDown, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+const STATUS_OPTIONS: OrderStatus[] = ['new', 'confirmed', 'packed', 'dispatched', 'delivered', 'cancelled']
+const PAYMENT_OPTIONS: PaymentStatus[] = ['pending', 'paid', 'failed', 'refunded']
 
 const WHATSAPP_MESSAGES: Record<string, string> = {
   confirmed:  'Hi {name}! Your order {order} has been confirmed. We are preparing it now.',
@@ -15,25 +21,120 @@ const WHATSAPP_MESSAGES: Record<string, string> = {
   cancelled:  'Hi {name}, your order {order} has been cancelled. Please contact us if you have any questions.',
 }
 
+// Custom Status Dropdown
+function StatusDropdown({ value, onChange }: { value: OrderStatus; onChange: (val: OrderStatus) => void }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const currentLabel = getOrderStatusLabel(value)
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-dark bg-white border border-border rounded-lg hover:border-primary transition-colors"
+      >
+        {currentLabel}
+        <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-lg shadow-lg overflow-hidden">
+          {STATUS_OPTIONS.map(opt => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => { onChange(opt); setIsOpen(false) }}
+              className={cn(
+                'w-full text-left px-3 py-2 text-sm hover:bg-surface transition-colors flex items-center justify-between',
+                value === opt ? 'bg-orange-50 text-primary font-semibold' : 'text-dark'
+              )}
+            >
+              {getOrderStatusLabel(opt)}
+              {value === opt && <Check size={14} />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Custom Payment Dropdown
+function PaymentDropdown({ value, onChange }: { value: PaymentStatus; onChange: (val: PaymentStatus) => void }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const currentLabel = value.charAt(0).toUpperCase() + value.slice(1)
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-dark bg-white border border-border rounded-lg hover:border-primary transition-colors"
+      >
+        {currentLabel}
+        <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-lg shadow-lg overflow-hidden">
+          {PAYMENT_OPTIONS.map(opt => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => { onChange(opt); setIsOpen(false) }}
+              className={cn(
+                'w-full text-left px-3 py-2 text-sm hover:bg-surface transition-colors flex items-center justify-between',
+                value === opt ? 'bg-orange-50 text-primary font-semibold' : 'text-dark'
+              )}
+            >
+              {opt.charAt(0).toUpperCase() + opt.slice(1)}
+              {value === opt && <Check size={14} />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 interface Props {
   order: any
 }
 
 export function OrderActions({ order }: Props) {
-  const router  = useRouter()
-  const toast   = useToast()
+  const router = useRouter()
+  const toast = useToast()
 
-  const [status,        setStatus]        = useState<OrderStatus>(order.order_status)
-  const [payStatus,     setPayStatus]     = useState<PaymentStatus>(order.payment_status)
-  const [mpesaReceipt,  setMpesaReceipt]  = useState(order.mpesa_receipt ?? '')
-  const [saving,        setSaving]        = useState(false)
-  const [deleting,      setDeleting]      = useState(false)
+  const [status, setStatus] = useState<OrderStatus>(order.order_status)
+  const [payStatus, setPayStatus] = useState<PaymentStatus>(order.payment_status)
+  const [mpesaReceipt, setMpesaReceipt] = useState(order.mpesa_receipt ?? '')
+  const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [confirmStatus, setConfirmStatus] = useState(false)
+  const [confirmPay, setConfirmPay] = useState(false)
 
-  // Get WhatsApp message for current status
   const waMessage = (WHATSAPP_MESSAGES[status] ?? '')
     .replace('{name}', order.customer_name.split(' ')[0])
     .replace('{order}', order.order_number)
-
   const waPhone = order.customer_phone.replace(/\D/g, '').replace(/^0/, '254')
 
   async function handleUpdateStatus() {
@@ -54,7 +155,7 @@ export function OrderActions({ order }: Props) {
       .from('orders')
       .update({
         payment_status: payStatus,
-        mpesa_receipt:  mpesaReceipt || null,
+        mpesa_receipt: mpesaReceipt || null,
       })
       .eq('id', order.id)
     setSaving(false)
@@ -64,13 +165,13 @@ export function OrderActions({ order }: Props) {
   }
 
   async function handleDelete() {
-    if (!confirm(`Delete order ${order.order_number}? This cannot be undone.`)) return
     setDeleting(true)
     const { error } = await supabaseBrowser
       .from('orders')
       .delete()
       .eq('id', order.id)
-    if (error) { toast.error('Failed to delete order'); setDeleting(false); return }
+    setDeleting(false)
+    if (error) { toast.error('Failed to delete order'); return }
     toast.success('Order deleted')
     router.push('/admin/orders')
   }
@@ -80,18 +181,15 @@ export function OrderActions({ order }: Props) {
       {/* Order Status */}
       <div className="bg-white border border-border rounded-xl p-5">
         <h2 className="font-extrabold text-dark mb-4">Update Status</h2>
-        <select
-          value={status}
-          onChange={e => setStatus(e.target.value as OrderStatus)}
-          className="w-full border border-border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-primary bg-white mb-3"
+        <div className="mb-3">
+          <StatusDropdown value={status} onChange={setStatus} />
+        </div>
+        <button
+          onClick={() => setConfirmStatus(true)}
+          disabled={saving || status === order.order_status}
+          className="w-full h-10 bg-dark text-white font-semibold text-sm rounded-full hover:bg-dark-400 disabled:opacity-50 transition-colors"
         >
-          {['new','confirmed','packed','dispatched','delivered','cancelled'].map(s => (
-            <option key={s} value={s}>{getOrderStatusLabel(s as OrderStatus)}</option>
-          ))}
-        </select>
-        <button onClick={handleUpdateStatus} disabled={saving || status === order.order_status}
-          className="w-full h-10 bg-dark text-white font-semibold text-sm rounded-full hover:bg-dark-400 disabled:opacity-50 transition-colors">
-          {saving ? 'Saving...' : 'Update Status'}
+          Update Status
         </button>
       </div>
 
@@ -103,16 +201,7 @@ export function OrderActions({ order }: Props) {
             <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">
               Payment Status
             </label>
-            <select
-              value={payStatus}
-              onChange={e => setPayStatus(e.target.value as PaymentStatus)}
-              className="w-full border border-border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-primary bg-white"
-            >
-              <option value="pending">Pending</option>
-              <option value="paid">Paid ✓</option>
-              <option value="failed">Failed</option>
-              <option value="refunded">Refunded</option>
-            </select>
+            <PaymentDropdown value={payStatus} onChange={setPayStatus} />
           </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">
@@ -125,8 +214,11 @@ export function OrderActions({ order }: Props) {
               className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary"
             />
           </div>
-          <button onClick={handleUpdatePayment} disabled={saving}
-            className="w-full h-10 bg-primary text-white font-semibold text-sm rounded-full hover:bg-primary-600 disabled:opacity-50 transition-colors">
+          <button
+            onClick={() => setConfirmPay(true)}
+            disabled={saving}
+            className="w-full h-10 bg-primary text-white font-semibold text-sm rounded-full hover:bg-primary-600 disabled:opacity-50 transition-colors"
+          >
             Update Payment
           </button>
         </div>
@@ -135,7 +227,7 @@ export function OrderActions({ order }: Props) {
         )}
       </div>
 
-      {/* WhatsApp customer with pre-filled message */}
+      {/* WhatsApp customer */}
       <div className="bg-white border border-border rounded-xl p-5">
         <h2 className="font-extrabold text-dark mb-3">Message Customer</h2>
         <p className="text-xs text-muted mb-3 leading-relaxed">
@@ -156,18 +248,47 @@ export function OrderActions({ order }: Props) {
         )}
       </div>
 
-      {/* Delete order */}
+      {/* Danger zone */}
       <div className="bg-white border border-red-100 rounded-xl p-5">
         <h2 className="font-extrabold text-dark mb-2">Danger Zone</h2>
         <p className="text-xs text-muted mb-3">Permanently delete this order. Cannot be undone.</p>
         <button
-          onClick={handleDelete}
+          onClick={() => setConfirmDelete(true)}
           disabled={deleting}
           className="w-full h-10 border border-danger text-danger text-sm font-semibold rounded-full hover:bg-red-50 disabled:opacity-50 transition-colors"
         >
           {deleting ? 'Deleting...' : '🗑 Delete Order'}
         </button>
       </div>
+
+      {/* Confirm Dialogs */}
+      <ConfirmDialog
+        isOpen={confirmDelete}
+        title="Delete Order"
+        message={`Delete order ${order.order_number}? This removes all order data permanently.`}
+        confirmLabel="Yes, Delete"
+        variant="danger"
+        onConfirm={() => { setConfirmDelete(false); handleDelete() }}
+        onCancel={() => setConfirmDelete(false)}
+      />
+      <ConfirmDialog
+        isOpen={confirmStatus}
+        title="Update Order Status"
+        message={`Change status to "${getOrderStatusLabel(status)}"?`}
+        confirmLabel="Update"
+        variant="info"
+        onConfirm={() => { setConfirmStatus(false); handleUpdateStatus() }}
+        onCancel={() => setConfirmStatus(false)}
+      />
+      <ConfirmDialog
+        isOpen={confirmPay}
+        title="Update Payment"
+        message={`Mark this order as "${payStatus.charAt(0).toUpperCase() + payStatus.slice(1)}"?`}
+        confirmLabel="Update Payment"
+        variant="warning"
+        onConfirm={() => { setConfirmPay(false); handleUpdatePayment() }}
+        onCancel={() => setConfirmPay(false)}
+      />
     </>
   )
 }

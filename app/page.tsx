@@ -8,7 +8,7 @@ import { Footer }               from '@/components/layout/Footer'
 import { ProductGridSkeleton }  from '@/components/ui/Skeleton'
 import { FeaturedProductTabs }  from '@/components/shop/FeaturedProductTabs'
 import type { ProductSummary }  from '@/types'
-import { HeroBanner } from '@/components/shop/HeroBanner'
+import { HeroBanner }           from '@/components/shop/HeroBanner'
 
 export const metadata: Metadata = {
   title: 'Niks Digital Connections – Electronics Shop | Kikuyu Town',
@@ -52,10 +52,25 @@ async function getSettings() {
 export default async function HomePage() {
   const [products, settings] = await Promise.all([getProducts(), getSettings()])
 
-const featured    = products.filter(p => p.is_featured).slice(0, 10)
-const bestSellers = products.slice(0, 20)
-const newArrivals = products.filter(p => p.badge === 'new').slice(0, 10)
-const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
+  const featured    = products.filter(p => p.is_featured).slice(0, 10)
+  const bestSellers = products.slice(0, 20)
+  const newArrivals = products.filter(p => p.badge === 'new').slice(0, 10)
+  const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
+
+  // Extract banner images (no fallback – if empty, no hero)
+  let bannerImages: string[] = []
+  if (settings.hero_images) {
+    try {
+      const parsed = JSON.parse(settings.hero_images)
+      if (Array.isArray(parsed)) bannerImages = parsed.filter(img => img && img.trim() !== '')
+    } catch {}
+  }
+  if (bannerImages.length === 0 && settings.hero_image) {
+    bannerImages = [settings.hero_image]
+  }
+
+  const hasBanner = bannerImages.length > 0
+  const hasText   = !!settings.hero_title || !!settings.hero_subtitle
 
   const CATEGORIES = [
     { slug: 'phones',      label: 'Phones & Accessories', icon: '📱', count: '50+' },
@@ -75,69 +90,51 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
       <Navbar />
       <main>
 
-      <section className="bg-white py-8 lg:py-12">
-  <div className="container-site">
-    {/* If no text content, show full-width banner */}
-    {!settings.hero_title && !settings.hero_subtitle ? (
-      <div className="relative rounded-xl overflow-hidden border border-border bg-surface w-full" style={{height: '420px'}}>
-        <HeroBanner
-          images={
-            settings.hero_images
-              ? JSON.parse(settings.hero_images)
-              : [settings.hero_image ?? 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&q=80']
-          }
-          interval={2000}
-        />
-       
-      </div>
-    ) : (
-      /* Two column layout when text exists */
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        <div>
-          {settings.hero_title && (
-            <h1 className="text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-4">
-              {settings.hero_title}
-            </h1>
-          )}
-          {settings.hero_subtitle && (
-            <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
-              {settings.hero_subtitle}
-            </p>
-          )}
-       
-          
-        </div>
-        <div className="relative rounded-xl overflow-hidden border border-border bg-surface aspect-[4/3]">
-          <HeroBanner
-            images={
-              settings.hero_images
-                ? JSON.parse(settings.hero_images)
-                : [settings.hero_image ?? 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&q=80']
-            }
-            interval={2000}
-          />
-        </div>
-      </div>
-    )}
- <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-border">
-  <div className="flex gap-3">
-    <Link href="/shop"
-      className="h-11 px-6 bg-primary text-white font-semibold rounded-full text-sm flex items-center hover:bg-primary-600 transition-colors">
-      Shop Now
-    </Link>
-    <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
-      target="_blank" rel="noopener noreferrer"
-      className="h-11 px-6 bg-white border border-border text-dark font-semibold rounded-full text-sm flex items-center gap-2 hover:border-primary hover:text-primary transition-colors">
-      💬 WhatsApp Us
-    </a>
-  </div>
-  
-</div>
-   
-  </div>
-</section>
-             
+        {/* Hero section – only rendered if there is at least one banner image */}
+        {hasBanner && (
+          <section className="bg-white py-8 lg:py-12">
+            <div className="container-site">
+              {!hasText ? (
+                <div className="relative rounded-xl overflow-hidden border border-border bg-surface w-full" style={{height: '420px'}}>
+                  <HeroBanner images={bannerImages} interval={3000} />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                  <div>
+                    {settings.hero_title && (
+                      <h1 className="text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-4">
+                        {settings.hero_title}
+                      </h1>
+                    )}
+                    {settings.hero_subtitle && (
+                      <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
+                        {settings.hero_subtitle}
+                      </p>
+                    )}
+                  </div>
+                  <div className="relative rounded-xl overflow-hidden border border-border bg-surface aspect-[4/3]">
+                    <HeroBanner images={bannerImages} interval={3000} />
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-border">
+                <div className="flex gap-3">
+                  <Link href="/shop"
+                    className="h-11 px-6 bg-primary text-white font-semibold rounded-full text-sm flex items-center hover:bg-primary-600 transition-colors">
+                    Shop Now
+                  </Link>
+                  <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="h-11 px-6 bg-white border border-border text-dark font-semibold rounded-full text-sm flex items-center gap-2 hover:border-primary hover:text-primary transition-colors">
+                    💬 WhatsApp Us
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
+        {/* Shop by Category */}
         <section className="bg-white py-8 lg:py-12">
           <div className="container-site">
             <div className="mb-8">
@@ -161,6 +158,7 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
+        {/* Featured Products */}
         <section className="bg-surface py-8 lg:py-12">
           <div className="container-site">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8 gap-4">
@@ -183,6 +181,7 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
+        {/* Promo Strip */}
         <section className="bg-primary py-5">
           <div className="container-site flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-white font-bold text-base sm:text-lg text-center sm:text-left">
@@ -195,7 +194,8 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
-         <section className="bg-surface border-y border-border py-10">
+        {/* Why Choose Us */}
+        <section className="bg-surface border-y border-border py-10">
           <div className="container-site">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {FEATURES.map(f => (
@@ -211,6 +211,7 @@ const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
           </div>
         </section>
 
+        {/* Testimonials */}
         <section className="bg-white py-8 lg:py-12">
           <div className="container-site">
             <div className="text-center mb-10">

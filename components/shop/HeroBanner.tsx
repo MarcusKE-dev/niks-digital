@@ -3,36 +3,26 @@ import { useState, useEffect } from 'react'
 
 interface Props {
   images:    string[]
-  interval?: number   // default 3000ms
+  interval?: number
 }
 
 export function HeroBanner({ images, interval = 3000 }: Props) {
   const [current, setCurrent] = useState(0)
-
-  // Filter out empty or invalid image URLs
   const validImages = images.filter(img => img && img.trim() !== '')
 
-  // Auto‑rotate
   useEffect(() => {
-    if (validImages.length <= 1) return   // no rotation needed
+    if (validImages.length <= 1) return
     const timer = setInterval(() => {
       setCurrent(prev => (prev + 1) % validImages.length)
     }, interval)
     return () => clearInterval(timer)
-  }, [validImages.length, interval])   // restart if number of images changes
-
+  }, [validImages.length, interval])
 
   useEffect(() => {
     setCurrent(0)
   }, [validImages.length])
 
-  if (validImages.length === 0) {
-    return (
-      <div className="w-full h-full bg-surface flex items-center justify-center">
-        <span className="text-muted text-sm">No banner image</span>
-      </div>
-    )
-  }
+  if (validImages.length === 0) return null
 
   return (
     <div className="relative w-full h-full overflow-hidden">
