@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase'
 import { formatKES, formatDate, getOrderStatusColor, getOrderStatusLabel, getPaymentStatusColor } from '@/lib/utils'
-import { DeleteOrderButton } from '@/components/admin/DeleteOrderButton'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 export default function AdminOrdersPage({ searchParams }: { searchParams: { status?: string } }) {
@@ -119,7 +118,7 @@ export default function AdminOrdersPage({ searchParams }: { searchParams: { stat
                   className="accent-primary"
                 />
               </th>
-              {['Order #','Customer','Phone','Total','Payment','Status','Date',''].map(h => (
+              {['Order #','Customer','Phone','Total','Payment','Status','Date','Actions'].map(h => (
                 <th key={h} className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted">{h}</th>
               ))}
             </tr>
@@ -151,12 +150,9 @@ export default function AdminOrdersPage({ searchParams }: { searchParams: { stat
                 </td>
                 <td className="px-4 py-3 text-muted text-xs">{formatDate(order.created_at)}</td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <Link href={`/admin/orders/${order.id}`} className="text-xs text-primary hover:underline font-medium">
-                      View →
-                    </Link>
-                    <DeleteOrderButton orderId={order.id} orderNumber={order.order_number} />
-                  </div>
+                  <Link href={`/admin/orders/${order.id}`} className="text-xs text-primary hover:underline font-medium">
+                    View →
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -165,11 +161,10 @@ export default function AdminOrdersPage({ searchParams }: { searchParams: { stat
         {orders.length === 0 && <p className="text-center py-12 text-muted text-sm">No orders found.</p>}
       </div>
 
-      {/* Styled confirmation for bulk delete */}
       <ConfirmDialog
         isOpen={confirmOpen}
         title="Bulk Delete"
-        message={`Are you sure you want to delete ${selected.size} order(s)? This action cannot be undone.`}
+        message={`Delete ${selected.size} order(s)? This action cannot be undone.`}
         confirmLabel="Yes, Delete"
         variant="danger"
         onConfirm={handleBulkDelete}

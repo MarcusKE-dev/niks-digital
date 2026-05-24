@@ -1,29 +1,41 @@
-import Link                   from 'next/link'
+import Link from 'next/link'
 import { createSupabaseServer } from '@/lib/supabase-server'
 import { formatKES, formatDate, getOrderStatusColor, getOrderStatusLabel } from '@/lib/utils'
 
 export default async function AdminDashboard() {
   const supabase = createSupabaseServer()
-const { data: { user } } = await supabase.auth.getUser()
-  console.log('[dashboard] user:', user?.email || 'none')
-  const [{ count: totalOrders }, { count: totalProducts }, { data: recentOrders }, { data: lowStock }] =
-    await Promise.all([
-      supabase.from('orders').select('*', { count: 'exact', head: true }),
-      supabase.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true),
-      supabase.from('orders').select('id,order_number,customer_name,total,order_status,payment_status,created_at').order('created_at', { ascending: false }).limit(10),
-      supabase.from('products').select('id,name,stock_qty').eq('is_active', true).lt('stock_qty', 5).order('stock_qty').limit(5),
-    ])
 
-  const { data: revenueData } = await supabase.from('orders').select('total').eq('payment_status', 'paid')
+  const [
+    { count: totalOrders },
+    { count: totalProducts },
+    { data: recentOrders },
+    { data: lowStock },
+    { data: revenueData },
+    { count: pendingCount },
+  ] = await Promise.all([
+    supabase.from('orders').select('*', { count: 'exact', head: true }),
+    supabase.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('orders')
+      .select('id,order_number,customer_name,total,order_status,payment_status,created_at')
+      .order('created_at', { ascending: false })
+      .limit(10),
+    supabase.from('products')
+      .select('id,name,stock_qty')
+      .eq('is_active', true)
+      .lt('stock_qty', 5)
+      .order('stock_qty')
+      .limit(5),
+    supabase.from('orders').select('total').eq('payment_status', 'paid'),
+    supabase.from('orders').select('*', { count: 'exact', head: true }).eq('order_status', 'new'),
+  ])
+
   const revenue = (revenueData ?? []).reduce((s, o) => s + Number(o.total), 0)
 
-  const { count: pendingCount } = await supabase.from('orders').select('*', { count: 'exact', head: true }).eq('order_status', 'new')
-
   const STATS = [
-    { label: 'Total Orders',    value: totalOrders ?? 0,           icon: '🛒', color: 'bg-blue-50   border-blue-200' },
-    { label: 'Revenue (Paid)',  value: formatKES(revenue),         icon: '💰', color: 'bg-green-50  border-green-200' },
-    { label: 'Active Products', value: totalProducts ?? 0,         icon: '📦', color: 'bg-orange-50 border-orange-200' },
-    { label: 'Pending Orders',  value: pendingCount ?? 0,          icon: '⏳', color: 'bg-red-50    border-red-200' },
+    { label: 'Total Orders', value: totalOrders ?? 0, icon: '🛒', color: 'bg-blue-50 border-blue-200', link: '/admin/orders' },
+    { label: 'Revenue (Paid)', value: formatKES(revenue), icon: '💰', color: 'bg-green-50 border-green-200', link: '/admin/orders?payment_status=paid' },
+    { label: 'Active Products', value: totalProducts ?? 0, icon: '📦', color: 'bg-orange-50 border-orange-200', link: '/admin/products' },
+    { label: 'Pending Orders', value: pendingCount ?? 0, icon: '⏳', color: 'bg-red-50 border-red-200', link: '/admin/orders?status=new' },
   ]
 
   return (
@@ -38,14 +50,14 @@ const { data: { user } } = await supabase.auth.getUser()
         </Link>
       </div>
 
-      {/* Stats */}
+      {/* Stats cards – clickable */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {STATS.map(s => (
-          <div key={s.label} className={`border rounded-xl p-5 ${s.color}`}>
+          <Link key={s.label} href={s.link} className={`border rounded-xl p-5 ${s.color} hover:shadow-md transition-shadow`}>
             <p className="text-2xl mb-2" aria-hidden>{s.icon}</p>
             <p className="text-2xl font-extrabold text-dark">{s.value}</p>
             <p className="text-xs text-muted mt-1">{s.label}</p>
-          </div>
+          </Link>
         ))}
       </div>
 

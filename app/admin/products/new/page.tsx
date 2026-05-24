@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter }           from 'next/navigation'
 import Link                    from 'next/link'
+import { SelectDropdown } from '@/components/ui/SelectDropdown'
 import { supabaseBrowser, STORAGE_BUCKETS } from '@/lib/supabase'
 import { toSlug, productImageSrc }          from '@/lib/utils'
 import { useToast }                         from '@/components/ui/Toaster'
@@ -124,11 +125,13 @@ export default function NewProductPage() {
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">Category <span className="text-danger">*</span></label>
-                <select name="category_id" value={form.category_id} onChange={handleChange}
-                  className="w-full border border-border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-primary bg-white">
-                  <option value="">Select category…</option>
-                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
+              <SelectDropdown
+                options={categories.map(c => ({ value: c.id, label: c.name }))}
+                value={form.category_id}
+                onChange={(val) => setForm(f => ({ ...f, category_id: val }))}
+                placeholder="Select category"
+                error={form.formState.errors.category_id?.message}
+              />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">Description</label>
@@ -170,13 +173,17 @@ export default function NewProductPage() {
               <h2 className="font-bold text-dark">Settings</h2>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">Badge</label>
-                <select name="badge" value={form.badge} onChange={handleChange}
-                  className="w-full border border-border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-primary bg-white">
-                  <option value="">None</option>
-                  <option value="new">New</option>
-                  <option value="sale">Sale</option>
-                  <option value="hot">Hot</option>
-                </select>
+              <SelectDropdown
+                options={[
+                  { value: "", label: "None" },
+                  { value: "new", label: "New" },
+                  { value: "sale", label: "Sale" },
+                  { value: "hot", label: "Hot" }
+                ]}
+                value={form.badge}
+                onChange={(val) => setForm(f => ({ ...f, badge: val }))}
+                placeholder="Select badge"
+              />
               </div>
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" name="is_featured" checked={form.is_featured} onChange={handleChange} className="accent-primary w-4 h-4" />

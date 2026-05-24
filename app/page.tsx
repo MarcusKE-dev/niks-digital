@@ -1,5 +1,4 @@
 import type { Metadata }        from 'next'
-import Image                    from 'next/image'
 import Link                     from 'next/link'
 import { Suspense }             from 'react'
 import { createSupabaseServer } from '@/lib/supabase-server'
@@ -57,7 +56,7 @@ export default async function HomePage() {
   const newArrivals = products.filter(p => p.badge === 'new').slice(0, 10)
   const onSale      = products.filter(p => p.badge === 'sale').slice(0, 10)
 
-  // Extract banner images (no fallback – if empty, no hero)
+  // Extract banner images – no fallback, if empty, no hero
   let bannerImages: string[] = []
   if (settings.hero_images) {
     try {
