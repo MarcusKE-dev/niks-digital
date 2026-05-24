@@ -9,6 +9,7 @@ import { ProductCard } from '@/components/shop/ProductCard'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 import { formatKES } from '@/lib/utils'
 import type { ProductSummary, Category } from '@/types'
+import { FloatingCartButton } from '@/components/ui/FloatingCartButton'
 
 // ============================================================
 // BRAND LIST (capitalised, used for display and case‑insensitive matching)
@@ -71,6 +72,7 @@ function SortDropdown({ currentSort, onSortChange }: { currentSort: string; onSo
           ))}
         </div>
       )}
+      
     </div>
   )
 }
@@ -416,6 +418,7 @@ export default function ShopPage() {
           </div>
         </div>
       )}
+      <FloatingCartButton />
     </>
   )
 }
