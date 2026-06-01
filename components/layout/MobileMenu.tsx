@@ -143,7 +143,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         {/* Footer - WhatsApp link (FIXED: added missing <a tag) */}
         <div className="p-5 border-t border-border">
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}`}
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254798946124'}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}

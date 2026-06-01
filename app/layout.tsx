@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@type': 'ElectronicsStore',
               name: 'Niks Digital Connections',
               description: 'Electronics and phone accessories shop in Kikuyu Town, Kiambu.',
-              telephone: '+254700000001',
+              telephone: '+254798946124',
               address: {
                 '@type': 'PostalAddress',
                 streetAddress: 'Kikuyu Town Centre',

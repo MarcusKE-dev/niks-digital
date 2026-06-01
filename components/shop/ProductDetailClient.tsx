@@ -149,7 +149,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
           {inStock ? 'Add to Cart' : 'Out of Stock'}
         </button>
 
-        <Link href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}?text=Hi! I'm interested in: ${product.name}. Can I get more details?`}
+        <Link href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254798946124'}?text=Hi! I'm interested in: ${product.name}. Can I get more details?`}
           target="_blank" rel="noopener noreferrer"
           className="w-full h-12 bg-dark text-white font-bold text-sm rounded-full flex items-center justify-center gap-2 hover:bg-dark-400 transition-colors mb-4">
           <MessageCircle size={18} aria-hidden />

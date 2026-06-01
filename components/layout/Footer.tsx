@@ -49,7 +49,7 @@ const CONTACT_ITEMS = [
   {
     icon:  Phone,
     label: 'Phone',
-    lines: ['+254 798946124', '+254 798946124'],
+    lines: ['+254798946124', '+254798946124'],
     href:  'tel:+254798946124',
   },
   {

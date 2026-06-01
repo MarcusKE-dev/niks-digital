@@ -137,7 +137,7 @@ export function Navbar() {
 
               {/* WhatsApp button (desktop only) */}
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}?text=Hi! I'm interested in a product from Niks Digital Connections.`}
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254798946124'}?text=Hi! I'm interested in a product from Niks Digital Connections.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat with us on WhatsApp"

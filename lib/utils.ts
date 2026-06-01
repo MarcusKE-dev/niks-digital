@@ -155,7 +155,7 @@ export function titleCase(text: string): string {
 
 /**
  * Format a phone number for display.
- * e.g. "254700000001" → "+254 700 000 001"
+ * e.g. "254798946124" → "+254 700 000 001"
  */
 export function formatPhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, '')

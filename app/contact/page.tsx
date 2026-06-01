@@ -16,7 +16,7 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0">📞</div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted mb-0.5">Call Us</p>
-                <p className="font-bold text-dark text-lg group-hover:text-primary">+254 798946124</p>
+                <p className="font-bold text-dark text-lg group-hover:text-primary">+254798946124</p>
                 <p className="text-xs text-muted">Tap to call</p>
               </div>
             </a>
@@ -27,7 +27,7 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">💬</div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted mb-0.5">WhatsApp</p>
-                <p className="font-bold text-dark text-lg group-hover:text-green-600">+254 798946124</p>
+                <p className="font-bold text-dark text-lg group-hover:text-green-600">+254798946124</p>
                 <p className="text-xs text-muted">Chat with us</p>
               </div>
             </a>
