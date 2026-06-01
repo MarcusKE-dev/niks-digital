@@ -14,9 +14,10 @@ interface SelectDropdownProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  error?: string
 }
 
-export function SelectDropdown({ options, value, onChange, placeholder = 'Select...' }: SelectDropdownProps) {
+export function SelectDropdown({ options, value, onChange, placeholder = 'Select...', error }: SelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -35,7 +36,11 @@ export function SelectDropdown({ options, value, onChange, placeholder = 'Select
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-dark bg-white border border-border rounded-lg hover:border-primary transition-colors"
+        className={cn(
+          'w-full flex items-center justify-between px-3 py-2.5 text-sm text-dark bg-white border rounded-lg transition-colors',
+          error ? 'border-danger' : 'border-border hover:border-primary',
+          'focus:outline-none'
+        )}
       >
         <span>{currentLabel}</span>
         <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -58,6 +63,7 @@ export function SelectDropdown({ options, value, onChange, placeholder = 'Select
           ))}
         </div>
       )}
+      {error && <p className="text-xs text-danger mt-1">{error}</p>}
     </div>
   )
 }

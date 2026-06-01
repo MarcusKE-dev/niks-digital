@@ -33,36 +33,24 @@ const CATEGORY_LINKS = [
 
 const SOCIAL_LINKS = [
   {
-    href:  'https://facebook.com/niksdigital',
-    label: 'Niks Digital on Facebook',
+    href:  'https://www.facebook.com/nicholas.wainaina.5',
+    label: 'Facebook',
     icon:  Facebook,
   },
   {
-    href:  'https://instagram.com/niksdigital',
-    label: 'Niks Digital on Instagram',
-    icon:  Instagram,
+    href:  'https://www.tiktok.com/@nicholas.wathigo',
+    label: 'TikTok',
+    icon:  null,  
   },
-  {
-    href:  'https://twitter.com/niksdigital',
-    label: 'Niks Digital on X (Twitter)',
-    icon:  Twitter,
-  },
-  {
-    href:  'https://youtube.com/@niksdigital',
-    label: 'Niks Digital on YouTube',
-    icon:  Youtube,
-  },
-  { href: 'https://tiktok.com/@niksdigital',
-       label: 'TikTok',
-      icon: null      },
+
 ] as const
 
 const CONTACT_ITEMS = [
   {
     icon:  Phone,
     label: 'Phone',
-    lines: ['+254 700 000 001', '+254 700 000 002'],
-    href:  'tel:+254700000001',
+    lines: ['+254 798946124', '+254 798946124'],
+    href:  'tel:+254798946124',
   },
   {
     icon:  Mail,
@@ -113,19 +101,19 @@ export function Footer() {
                 Niks&nbsp;<span className="text-primary">Digital</span>
               </span>
               <span className="text-[10px] text-white/40 uppercase tracking-[0.12em] mt-1">
-                Connection · Nairobi
+                Connection · Kikuyu
               </span>
             </Link>
 
             <p className="text-sm text-white/50 leading-relaxed mb-6 max-w-xs">
               Powering Modern Homes with Smart Electronics & Appliances.
-              Your trusted source for TVs, fridges, laptops, cookers and more
+              Your trusted source for TVs, phones & accessories, computer accessories, cookers and more
               across Kenya.
             </p>
 
             {/* WhatsApp CTA */}
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254700000001'}?text=Hi! I'd like to enquire about a product.`}
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '254798946124'}?text=Hi! I'd like to enquire about a product.`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-whatsapp text-white text-sm font-semibold hover:bg-green-600 transition-colors duration-normal mb-6"

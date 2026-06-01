@@ -1,0 +1,15 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /admin
+Disallow: /api
+
+# Host
+Host: https://niksdigital.co.ke
+
+# Sitemaps
+Sitemap: https://niksdigital.co.ke/sitemap.xml
+Sitemap: https://niksdigital.co.ke/server-sitemap.xml
