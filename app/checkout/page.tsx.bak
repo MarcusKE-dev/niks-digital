@@ -146,12 +146,6 @@ export default function CheckoutPage() {
   }
 
   async function onSubmit(data: CheckoutSchema) {
-    // ---- Prevent empty submission ----
-    if (!data.customer_name || !data.customer_phone || !data.delivery_address) {
-      toast.error("Please fill in all required fields (Name, Phone, Delivery Address).")
-      setLoading(false)
-      return
-    }
     setLoading(true)
     try {
       const orderRes = await axios.post('/api/orders/create', {
@@ -195,43 +189,26 @@ export default function CheckoutPage() {
   }
 
   function pollPayment(id: string) {
-  let attempts = 0
-  const MAX_ATTEMPTS = 30  // 2.5 minutes max
-
-  const interval = setInterval(async () => {
-    attempts++
-    try {
-      const { data } = await axios.get(`/api/orders/${id}/status`)
-
-      if (data.payment_status === 'paid') {
+    let attempts = 0
+    const interval = setInterval(async () => {
+      attempts++
+      try {
+        const { data } = await axios.get(`/api/orders/${id}/status`)
+        if (data.payment_status === 'paid') {
+          clearInterval(interval)
+          router.push(`/order-confirm/${id}`)
+        }
+        if (data.payment_status === 'failed' || attempts >= 24) {
+          clearInterval(interval)
+          toast.error('Payment timed out. Please try again.')
+          setStep('form')
+          setLoading(false)
+        }
+      } catch {
         clearInterval(interval)
-        // Full navigation — clears history stack, no back-to-cart
-        window.location.replace(`/order-confirm/${id}`)
-        return
       }
-
-      if (data.payment_status === 'failed') {
-        clearInterval(interval)
-        setStep('form')
-        setLoading(false)
-        toast.error('Payment failed or was cancelled. Please try again.')
-        return
-      }
-
-      if (attempts >= MAX_ATTEMPTS) {
-        clearInterval(interval)
-        setStep('form')
-        setLoading(false)
-        toast.error('Payment timed out. If you paid, check your orders via WhatsApp.')
-      }
-
-    } catch {
-      clearInterval(interval)
-      setStep('form')
-      setLoading(false)
-    }
-  }, 5000)
-}
+    }, 5000)
+  }
 
   if (step === 'mpesa-waiting') {
     return (
@@ -386,7 +363,8 @@ export default function CheckoutPage() {
                   <div className="space-y-3 mb-5">
                     {[
                       { value: 'mpesa', label: 'M-Pesa', icon: '📱', sub: 'STK Push to your phone — recommended' },
-                      { value: 'cash',  label: 'Cash on Delivery', icon: '💵', sub: 'Kikuyu & surrounding areas only' },
+                      { value: 'card', label: 'Debit / Credit Card', icon: '💳', sub: 'Visa, Mastercard' },
+                      { value: 'cash', label: 'Cash on Delivery', icon: '💵', sub: 'Kikuyu Town only · pay when delivered' },
                     ].map(opt => (
                       <label key={opt.value} className={cn(
                         'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all',
@@ -402,18 +380,8 @@ export default function CheckoutPage() {
                     ))}
                   </div>
 
-                  {/* Card Coming Soon – disabled */}
-                  <div className="flex items-center gap-4 p-4 border-2 border-dashed border-border rounded-xl opacity-50 cursor-not-allowed">
-                    <span className="text-xl">💳</span>
-                    <div>
-                      <p className="text-sm font-bold text-dark">Card Payment</p>
-                      <p className="text-xs text-muted">Coming soon — not available yet</p>
-                    </div>
-                    <span className="ml-auto text-2xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-medium">Soon</span>
-                  </div>
-
                   {watchMethod === 'mpesa' && (
-                    <div className="mt-4 bg-surface border border-border rounded-lg p-4">
+                    <div className="bg-surface border border-border rounded-lg p-4">
                       <InputField name="mpesa_phone" label="M-Pesa Phone Number" placeholder={watchPhone || '0712 345 678'} type="tel" required />
                       <p className="text-xs text-muted -mt-3">An STK Push will be sent to this number. Enter your PIN to pay.</p>
                     </div>
@@ -455,7 +423,7 @@ export default function CheckoutPage() {
                   className="w-full sm:w-auto sm:min-w-[240px] h-12 px-8 bg-primary text-white font-bold text-sm rounded-full flex items-center justify-center gap-2 hover:bg-primary-600 disabled:opacity-60 transition-colors mx-auto">
                   {loading
                     ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Processing...</>
-                    : ' Place Order'
+                    : '🔒 Place Order'
                   }
                 </button>
               </div>

@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient }             from '@supabase/ssr'
 
+
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -26,11 +28,11 @@ export async function middleware(request: NextRequest) {
       },
     }
   )
+  
 
   // Check session exists
-  const { data: { session } } = await supabase.auth.getSession()
-
-  if (!session) {
+ const { data: { user } } = await supabase.auth.getUser()
+if (!user) {
     return NextResponse.redirect(
       new URL(`/admin/login?redirectTo=${pathname}`, request.url)
     )
@@ -38,10 +40,10 @@ export async function middleware(request: NextRequest) {
 
   // Check admin role using our admins table
   const { data: adminRecord } = await supabase
-    .from('admins')
-    .select('id')
-    .eq('user_id', session.user.id)
-    .single()
+  .from('admins')
+  .select('id')
+  .eq('user_id', user.id)
+  .single()
 
   if (!adminRecord) {
     // Authenticated but not an admin — sign them out and redirect

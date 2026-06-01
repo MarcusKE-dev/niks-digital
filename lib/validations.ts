@@ -57,7 +57,7 @@ delivery_address: z
 
     notes: z.string().max(500, 'Notes are too long').optional(),
 
-    payment_method: z.enum(['mpesa', 'card', 'cash'], {
+    payment_method: z.enum(['mpesa', 'cash'], {
       errorMap: () => ({ message: 'Please select a payment method' }),
     }),
 
