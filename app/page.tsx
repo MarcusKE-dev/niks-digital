@@ -41,13 +41,25 @@ async function getProducts() {
 }
 
 async function getSettings() {
-  const supabase = createSupabaseServer()
-  const { data } = await supabase.from('site_settings').select('key,value')
-  const map: Record<string, string> = {}
-  ;(data ?? []).forEach((row: any) => { map[row.key] = row.value })
-  return map
-}
+  try {
+    const supabase = createSupabaseServer()
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('key,value')
 
+    if (error) {
+      console.error('[getSettings] Error:', error.message)
+      return {} as Record<string, string>
+    }
+
+    const map: Record<string, string> = {}
+    ;(data ?? []).forEach((row: any) => { map[row.key] = row.value })
+    return map
+  } catch (err) {
+    console.error('[getSettings] Unexpected error:', err)
+    return {} as Record<string, string>
+  }
+}
 export default async function HomePage() {
   const [products, settings] = await Promise.all([getProducts(), getSettings()])
 

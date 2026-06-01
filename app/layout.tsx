@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { validateEnv } from '@/lib/env'
 
 export const metadata: Metadata = {
   title: {
@@ -39,6 +40,19 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Validate environment variables on server only
+  if (typeof window === 'undefined') {
+    try {
+      validateEnv()
+    } catch (err) {
+      console.error('[Env Validation]', err)
+      // In development you can throw, in production you may want to log and continue
+      if (process.env.NODE_ENV === 'development') {
+        throw err
+      }
+    }
+  }
+
   return (
     <html lang="en-KE" suppressHydrationWarning>
       <head>
