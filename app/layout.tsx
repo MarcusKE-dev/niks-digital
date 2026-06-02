@@ -2,14 +2,15 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { validateEnv } from '@/lib/env'
 
+const siteDescription =
+  'Niks Digital Connections – best electronics shop in Kikuyu Town, Kiambu. Buy phones, laptops, TVs, audio systems, and accessories. M-Pesa accepted. Free delivery in Kikuyu.'
+
 export const metadata: Metadata = {
   title: {
     default: 'Niks Digital Connections – Electronics Shop | Kikuyu Town',
     template: '%s | Niks Digital Connections',
   },
-  description:
-    'Buy phones, TVs, laptops, speakers, kitchen appliances and electronics in Kikuyu Town. ' +
-    'Best prices, M-Pesa accepted, free delivery in Kikuyu.',
+  description: siteDescription,
   keywords: [
     'electronics shop Kikuyu',
     'phone shop Kikuyu Town',
@@ -39,10 +40,9 @@ export const metadata: Metadata = {
     locale: 'en_KE',
     siteName: 'Niks Digital Connections',
     title: 'Niks Digital Connections – Electronics Shop Kikuyu',
-    description: 'Phones, TVs, laptops, speakers and more. Kikuyu Town, Kiambu.',
+    description: siteDescription,
   },
   robots: { index: true, follow: true },
-  // icons metadata removed – using explicit <link> tags instead
 }
 
 export const viewport: Viewport = {
@@ -52,7 +52,6 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Validate environment variables on server only
   if (typeof window === 'undefined') {
     try {
       validateEnv()
@@ -70,21 +69,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* Google Search Console verification */}
         <meta name="google-site-verification" content="S1p_4TQKjc0dtqg6XMMSY3-hzrKGUHBcVDMJ0iomhRs" />
 
-        {/* ========== FAVICON & MANIFEST LINKS ========== */}
+        {/* Favicon & manifest */}
         <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-
-        {/* Android/Chrome specific icons (if you have them) */}
         <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/web-app-manifest-512x512.png" />
 
-        {/* Structured Data (JSON‑LD) */}
+        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
