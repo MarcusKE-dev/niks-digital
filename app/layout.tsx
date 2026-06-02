@@ -7,18 +7,29 @@ export const metadata: Metadata = {
     default: 'Niks Digital Connections – Electronics Shop | Kikuyu Town',
     template: '%s | Niks Digital Connections',
   },
-  // ✅ Google verification removed from metadata – we'll put it directly in <head>
   description:
     'Buy phones, TVs, laptops, speakers, kitchen appliances and electronics in Kikuyu Town. ' +
     'Best prices, M-Pesa accepted, free delivery in Kikuyu.',
   keywords: [
     'electronics shop Kikuyu',
+    'phone shop Kikuyu Town',
     'buy phone Kikuyu',
-    'buy TV Kikuyu',
-    'phone accessories Kikuyu',
+    'laptop shop Kikuyu',
+    'TV shop Kikuyu',
+    'speakers',
+    'audio systems',
+    'sub woofer',
+    'sound bar',
+    'accessories nairobi',
+    'electronics nairobi',
     'electronics Kiambu',
+    'phone accessories Kikuyu',
     'Niks Digital Connections',
+    'electronics shop near me Kikuyu',
+    'buy electronics M-Pesa Kenya',
     'smart watch Kikuyu',
+    'computer accessories Kikuyu',
+    'Niks Digital',
     'kitchen appliances Kikuyu',
   ],
   authors: [{ name: 'Niks Digital Connections' }],
@@ -31,7 +42,7 @@ export const metadata: Metadata = {
     description: 'Phones, TVs, laptops, speakers and more. Kikuyu Town, Kiambu.',
   },
   robots: { index: true, follow: true },
-  icons: { icon: '/favicon.ico' },
+  // icons metadata removed – using explicit <link> tags instead
 }
 
 export const viewport: Viewport = {
@@ -59,9 +70,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* ✅ Google Search Console verification – explicit meta tag */}
+        {/* Google Search Console verification */}
         <meta name="google-site-verification" content="S1p_4TQKjc0dtqg6XMMSY3-hzrKGUHBcVDMJ0iomhRs" />
 
+        {/* ========== FAVICON & MANIFEST LINKS ========== */}
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+
+        {/* Android/Chrome specific icons (if you have them) */}
+        <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/web-app-manifest-512x512.png" />
+
+        {/* Structured Data (JSON‑LD) */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -69,23 +92,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@context': 'https://schema.org',
               '@type': 'ElectronicsStore',
               name: 'Niks Digital Connections',
-              description: 'Electronics and phone accessories shop in Kikuyu Town, Kiambu.',
+              image: 'https://niksdigital.co.ke/logo.png',
+              url: 'https://niksdigital.co.ke',
               telephone: '+254798946124',
+              priceRange: 'KES',
               address: {
                 '@type': 'PostalAddress',
                 streetAddress: 'Kikuyu Town Centre',
                 addressLocality: 'Kikuyu',
                 addressRegion: 'Kiambu',
+                postalCode: '00902',
                 addressCountry: 'KE',
+              },
+              geo: {
+                '@type': 'GeoCoordinates',
+                latitude: -1.24410,
+                longitude: 36.66391,
               },
               openingHoursSpecification: {
                 '@type': 'OpeningHoursSpecification',
-                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                opens: '08:00',
-                closes: '19:00',
+                dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+                opens: '07:00',
+                closes: '22:00',
               },
-              paymentAccepted: ['M-Pesa', 'Cash', 'Credit Card'],
-              priceRange: 'KES 500 – KES 150,000',
+              paymentAccepted: 'M-Pesa, Cash',
+              currenciesAccepted: 'KES',
+              areaServed: ['Kikuyu','Limuru','Tigoni','Kinoo','Nairobi','Kiambu','Thika'],
+              hasMap: 'https://maps.app.goo.gl/XzF7CnSNQzLwbvh2A',
             }),
           }}
         />
