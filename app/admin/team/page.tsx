@@ -1,17 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { supabaseBrowser }     from '@/lib/supabase'
-import { useToast }            from '@/components/ui/Toaster'
+import { supabaseBrowser } from '@/lib/supabase'
+import { useToast } from '@/components/ui/Toaster'
 
 export default function TeamPage() {
   const toast = useToast()
-  const [users,    setUsers]    = useState<any[]>([])
-  const [email,    setEmail]    = useState('')
+  const [users, setUsers] = useState<any[]>([])
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [adding,   setAdding]   = useState(false)
+  const [adding, setAdding] = useState(false)
 
   async function loadUsers() {
-    // Can only list users via service role — show current user for now
     const { data: { user } } = await supabaseBrowser.auth.getUser()
     if (user) setUsers([user])
   }
@@ -51,7 +50,6 @@ export default function TeamPage() {
     <div className="p-6 lg:p-8 max-w-2xl">
       <h1 className="text-2xl font-extrabold text-dark mb-8">Team & Access</h1>
 
-      {/* Current admins */}
       <div className="bg-white border border-border rounded-xl p-6 mb-6">
         <h2 className="font-bold text-dark mb-4 border-b border-border pb-3">Current Admins</h2>
         {users.map(u => (
@@ -67,7 +65,6 @@ export default function TeamPage() {
         ))}
       </div>
 
-      {/* Change your own password */}
       <div className="bg-white border border-border rounded-xl p-6 mb-6">
         <h2 className="font-bold text-dark mb-4 border-b border-border pb-3">Change My Password</h2>
         <form onSubmit={handleChangePassword} className="space-y-4">
@@ -92,9 +89,8 @@ export default function TeamPage() {
         </form>
       </div>
 
-      {/* Add new admin */}
       <div className="bg-white border border-border rounded-xl p-6">
-        <h2 className="font-bold text-dark mb-1 ">Add New Admin</h2>
+        <h2 className="font-bold text-dark mb-1">Add New Admin</h2>
         <p className="text-xs text-muted mb-4">This person will have full access to the admin panel.</p>
         <form onSubmit={handleAddAdmin} className="space-y-4">
           <div>
