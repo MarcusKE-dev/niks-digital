@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     default: 'Niks Digital Connections – Electronics Shop | Kikuyu Town',
     template: '%s | Niks Digital Connections',
   },
+  // ✅ Google verification removed from metadata – we'll put it directly in <head>
   description:
     'Buy phones, TVs, laptops, speakers, kitchen appliances and electronics in Kikuyu Town. ' +
     'Best prices, M-Pesa accepted, free delivery in Kikuyu.',
@@ -46,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       validateEnv()
     } catch (err) {
       console.error('[Env Validation]', err)
-      // In development you can throw, in production you may want to log and continue
       if (process.env.NODE_ENV === 'development') {
         throw err
       }
@@ -58,6 +58,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* ✅ Google Search Console verification – explicit meta tag */}
+        <meta name="google-site-verification" content="S1p_4TQKjc0dtqg6XMMSY3-hzrKGUHBcVDMJ0iomhRs" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
