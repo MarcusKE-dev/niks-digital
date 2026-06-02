@@ -38,7 +38,7 @@ const SOCIAL_LINKS = [
     icon:  Facebook,
   },
   {
-    href:  'https://www.tiktok.com/@nicholas.wathigo',
+    href:  'https://www.tiktok.com/@niksdigitalelectronics',
     label: 'TikTok',
     icon:  null,  
   },
@@ -49,25 +49,25 @@ const CONTACT_ITEMS = [
   {
     icon:  Phone,
     label: 'Phone',
-    lines: ['+254798946124', '+254798946124'],
+    lines: ['+254798946124', '+254705418405'],
     href:  'tel:+254798946124',
   },
   {
     icon:  Mail,
     label: 'Email',
-    lines: ['info@niksdigital.co.ke'],
-    href:  'mailto:info@niksdigital.co.ke',
+    lines: ['nikollazcharlz2015@gmail.com'],
+    href:  'mailto:nikollazcharlz2015@gmail.com',
   },
   {
     icon:  MapPin,
     label: 'Address',
     lines: ['Kikuyu Town Centre', 'Kikuyu Town, Kiambu County, Kenya'],
-    href:  'https://maps.google.com/?q=Kikuyu Town+Commercial+Centre+Nairobi',
+    href:  'https://maps.app.goo.gl/XzF7CnSNQzLwbvh2A',
   },
   {
     icon:  Clock,
     label: 'Hours',
-    lines: ['Monday – Sunday', '8:00am – 7:00pm'],
+    lines: ['Monday – Sunday', '7:00am – 10:00pm'],
     href:  null,
   },
 ] as const

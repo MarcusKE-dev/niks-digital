@@ -152,7 +152,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             💬 Chat on WhatsApp
           </a>
           <p className="text-center text-xs text-muted mt-3">
-            Kikuyu Town · Mon–Sun 8am–7pm
+            Kikuyu Town · Mon–Sun 7am–10pm
           </p>
         </div>
       </div>
