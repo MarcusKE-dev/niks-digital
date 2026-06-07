@@ -1,5 +1,5 @@
 'use client'
-import { compressImage, PRESETS } from '@/lib/compress-image'
+
 import { useState, useEffect } from 'react'
 import { useRouter }           from 'next/navigation'
 import Link                    from 'next/link'
@@ -41,27 +41,20 @@ export default function NewProductPage() {
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-  const files = Array.from(e.target.files ?? [])
-  if (!files.length) return
-  setUploading(true)
-
-  for (const file of files) {
-    const compressed = await compressImage(file, 'PRODUCT_THUMBNAIL')
-    const path = `${Date.now()}-${compressed.name.replace(/\s+/g, '-')}`
-    const { data, error } = await supabaseBrowser.storage
-      .from(STORAGE_BUCKETS.PRODUCTS)
-      .upload(path, compressed, { upsert: true, contentType: compressed.type })
-    if (error) {
-      toast.error(`Upload failed: ${error.message}`)
-      continue
+    const files = Array.from(e.target.files ?? [])
+    if (!files.length) return
+    setUploading(true)
+    for (const file of files) {
+      const path = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+      const { data, error } = await supabaseBrowser.storage
+        .from(STORAGE_BUCKETS.PRODUCTS)
+        .upload(path, file, { upsert: true })
+      if (error) { toast.error(`Upload failed: ${error.message}`); continue }
+      const url = supabaseBrowser.storage.from(STORAGE_BUCKETS.PRODUCTS).getPublicUrl(data.path).data.publicUrl
+      setImages(imgs => [...imgs, url])
     }
-    const url = supabaseBrowser.storage
-      .from(STORAGE_BUCKETS.PRODUCTS)
-      .getPublicUrl(data.path).data.publicUrl
-    setImages(imgs => [...imgs, url])
+    setUploading(false)
   }
-  setUploading(false)
-}
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

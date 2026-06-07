@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { supabaseBrowser }     from '@/lib/supabase'
 import { useToast }            from '@/components/ui/Toaster'
 import { STORAGE_BUCKETS }     from '@/lib/supabase'
-import { compressImage, PRESETS } from '@/lib/compress-image'
 
 export default function SettingsPage() {
   const toast = useToast()
@@ -31,33 +30,31 @@ export default function SettingsPage() {
   }, [])
 
   // Upload a new banner image (adds to the array)
-async function uploadBannerImage(e: React.ChangeEvent<HTMLInputElement>) {
-  const file = e.target.files?.[0]
-  if (!file) return
-  setUploading(true)
-
-  const compressed = await compressImage(file, 'HERO_BANNER')
-  const path = `hero/${Date.now()}-${compressed.name.replace(/\s+/g, '-')}`
-  const { data, error } = await supabaseBrowser.storage
-    .from(STORAGE_BUCKETS.PRODUCTS)
-    .upload(path, compressed, { upsert: false, contentType: compressed.type })
-
-  if (error) {
-    toast.error(error.message)
+  async function uploadBannerImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    const path = `hero/${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+    const { data, error } = await supabaseBrowser.storage
+      .from(STORAGE_BUCKETS.PRODUCTS)
+      .upload(path, file, { upsert: false })
+    if (error) {
+      toast.error(error.message)
+      setUploading(false)
+      return
+    }
+    const url = supabaseBrowser.storage
+      .from(STORAGE_BUCKETS.PRODUCTS)
+      .getPublicUrl(data.path).data.publicUrl
+    const updated = [...heroImages, url]
+    setHeroImages(updated)
+    // Immediately save to DB (optional: can wait for "Save Settings" button)
+    await supabaseBrowser.from('site_settings')
+      .upsert({ key: 'hero_images', value: JSON.stringify(updated) }, { onConflict: 'key' })
     setUploading(false)
-    return
+    toast.success('Banner image added!')
   }
-  const url = supabaseBrowser.storage
-    .from(STORAGE_BUCKETS.PRODUCTS)
-    .getPublicUrl(data.path).data.publicUrl
 
-  const updated = [...heroImages, url]
-  setHeroImages(updated)
-  await supabaseBrowser.from('site_settings')
-    .upsert({ key: 'hero_images', value: JSON.stringify(updated) }, { onConflict: 'key' })
-  setUploading(false)
-  toast.success('Banner image added!')
-}
   // Remove a banner image by index
   async function removeBannerImage(index: number) {
     const updated = heroImages.filter((_, i) => i !== index)
@@ -197,36 +194,39 @@ function CategoryImageUploader({ slug, label }: { slug: string; label: string })
         }
       })
   }, [slug])
-  
-async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-  const file = e.target.files?.[0]
-  if (!file) return
-  setUploading(true)
 
-  const compressed = await compressImage(file, 'CATEGORY_PHOTO')
-  const path = `categories/${slug}.jpg`
-  const { data, error } = await supabaseBrowser.storage
-    .from('product-images')
-    .upload(path, compressed, { upsert: true, contentType: compressed.type })
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
 
-  if (error) {
-    toast.error(error.message)
+    const path = `categories/${slug}.jpg`
+    const { data, error } = await supabaseBrowser.storage
+      .from('product-images')
+      .upload(path, file, { upsert: true, contentType: file.type })
+
+    if (error) {
+      toast.error(error.message)
+      setUploading(false)
+      return
+    }
+
+    const url = supabaseBrowser.storage
+      .from('product-images')
+      .getPublicUrl(data.path).data.publicUrl
+
+    await supabaseBrowser
+      .from('site_settings')
+      .upsert(
+        { key: `category_image_${slug}`, value: url },
+        { onConflict: 'key' }
+      )
+
+    setPreview(url)
     setUploading(false)
-    return
+    toast.success(`${label} photo updated!`)
   }
 
-  const url = supabaseBrowser.storage
-    .from('product-images')
-    .getPublicUrl(data.path).data.publicUrl
-
-  await supabaseBrowser
-    .from('site_settings')
-    .upsert({ key: `category_image_${slug}`, value: url }, { onConflict: 'key' })
-
-  setPreview(url)
-  setUploading(false)
-  toast.success(`${label} photo updated!`)
-}
   return (
     <div className="flex items-center gap-4 py-3 border-b border-border last:border-0">
       <div className="w-20 h-14 rounded-lg bg-surface border border-border overflow-hidden flex-shrink-0">
