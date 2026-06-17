@@ -173,6 +173,12 @@ export default function CheckoutPage() {
       setOrderId(newOrderId)
 
       if (data.payment_method === 'mpesa') {
+        // ---- MANUAL PAYMENT (STK Push temporarily disabled) ----
+        clearCart()
+        router.push(`/order-confirm/${newOrderId}?payment=manual`)
+        // ---- END MANUAL PAYMENT ----
+        
+        /* ---- ORIGINAL STK PUSH CODE (COMMENTED OUT) ----
         const phone = normalizeMpesaPhone(data.mpesa_phone || data.customer_phone)
         if (!phone) {
           toast.error('Invalid M-Pesa phone number')
@@ -183,6 +189,8 @@ export default function CheckoutPage() {
         setStep('mpesa-waiting')
         clearCart()
         pollPayment(newOrderId)
+        ---- END STK PUSH CODE ----
+        */
       } else {
         clearCart()
         router.push(`/order-confirm/${newOrderId}`)
@@ -194,45 +202,44 @@ export default function CheckoutPage() {
     }
   }
 
+  /* ---- POLL PAYMENT FUNCTION (COMMENTED OUT) ----
   function pollPayment(id: string) {
-  let attempts = 0
-  const MAX_ATTEMPTS = 30  // 2.5 minutes max
+    let attempts = 0
+    const MAX_ATTEMPTS = 30
 
-  const interval = setInterval(async () => {
-    attempts++
-    try {
-      const { data } = await axios.get(`/api/orders/${id}/status`)
-
-      if (data.payment_status === 'paid') {
-        clearInterval(interval)
-        // Full navigation — clears history stack, no back-to-cart
-        window.location.replace(`/order-confirm/${id}`)
-        return
-      }
-
-      if (data.payment_status === 'failed') {
+    const interval = setInterval(async () => {
+      attempts++
+      try {
+        const { data } = await axios.get(`/api/orders/${id}/status`)
+        if (data.payment_status === 'paid') {
+          clearInterval(interval)
+          window.location.replace(`/order-confirm/${id}`)
+          return
+        }
+        if (data.payment_status === 'failed') {
+          clearInterval(interval)
+          setStep('form')
+          setLoading(false)
+          toast.error('Payment failed or was cancelled. Please try again.')
+          return
+        }
+        if (attempts >= MAX_ATTEMPTS) {
+          clearInterval(interval)
+          setStep('form')
+          setLoading(false)
+          toast.error('Payment timed out. If you paid, check your orders via WhatsApp.')
+        }
+      } catch {
         clearInterval(interval)
         setStep('form')
         setLoading(false)
-        toast.error('Payment failed or was cancelled. Please try again.')
-        return
       }
+    }, 5000)
+  }
+  ---- END POLL PAYMENT ----
+  */
 
-      if (attempts >= MAX_ATTEMPTS) {
-        clearInterval(interval)
-        setStep('form')
-        setLoading(false)
-        toast.error('Payment timed out. If you paid, check your orders via WhatsApp.')
-      }
-
-    } catch {
-      clearInterval(interval)
-      setStep('form')
-      setLoading(false)
-    }
-  }, 5000)
-}
-
+  /* ---- MPESA WAITING STEP (COMMENTED OUT) ----
   if (step === 'mpesa-waiting') {
     return (
       <>
@@ -260,6 +267,8 @@ export default function CheckoutPage() {
       </>
     )
   }
+  ---- END MPESA WAITING STEP ----
+  */
 
   const InputField = ({ name, label, type = 'text', placeholder, required = false }: any) => (
     <div className="mb-5">
@@ -385,7 +394,7 @@ export default function CheckoutPage() {
                   <h2 className="font-extrabold text-dark mb-5">3. Payment Method</h2>
                   <div className="space-y-3 mb-5">
                     {[
-                      { value: 'mpesa', label: 'M-Pesa', icon: '📱', sub: 'STK Push to your phone — recommended' },
+                      { value: 'mpesa', label: 'M-Pesa (Paybill)', icon: '📱', sub: 'Pay via Paybill 522533 – Account 7508897' },
                       { value: 'cash',  label: 'Cash on Delivery', icon: '💵', sub: 'Kikuyu & surrounding areas only' },
                     ].map(opt => (
                       <label key={opt.value} className={cn(
@@ -414,8 +423,18 @@ export default function CheckoutPage() {
 
                   {watchMethod === 'mpesa' && (
                     <div className="mt-4 bg-surface border border-border rounded-lg p-4">
+                      {/* ---- Hide MPesa phone field for manual payment ---- */}
+                      <p className="text-sm text-dark font-medium">Pay via M‑Pesa Paybill</p>
+                      <p className="text-xs text-muted mt-1">
+                        Use Paybill <strong>522533</strong> and Account <strong>7508897</strong>.
+                        Enter the exact amount shown in your order summary.
+                      </p>
+                      {/* ---- End manual payment info ---- */}
+                      {/* ---- Original MPesa phone field (commented out) ----
                       <InputField name="mpesa_phone" label="M-Pesa Phone Number" placeholder={watchPhone || '0712 345 678'} type="tel" required />
                       <p className="text-xs text-muted -mt-3">An STK Push will be sent to this number. Enter your PIN to pay.</p>
+                      ---- End original ----
+                      */}
                     </div>
                   )}
                 </div>

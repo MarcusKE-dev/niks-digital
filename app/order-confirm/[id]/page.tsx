@@ -8,9 +8,12 @@ import { formatKES, formatDate } from '@/lib/utils'
 
 export const metadata: Metadata = { title: 'Order Confirmed' }
 
-interface PageProps { params: { id: string } }
+interface PageProps { 
+  params: { id: string }
+  searchParams: { payment?: string }
+}
 
-export default async function OrderConfirmPage({ params }: PageProps) {
+export default async function OrderConfirmPage({ params, searchParams }: PageProps) {
   const supabase = createSupabaseServer()
   const { data: order } = await supabase
     .from('orders')
@@ -21,6 +24,7 @@ export default async function OrderConfirmPage({ params }: PageProps) {
   if (!order) notFound()
 
   const items = order.order_items ?? []
+  const isManualPayment = searchParams.payment === 'manual'
 
   return (
     <>
@@ -43,6 +47,33 @@ export default async function OrderConfirmPage({ params }: PageProps) {
               <span className="text-sm font-extrabold text-dark">{order.order_number}</span>
             </div>
           </div>
+
+          {/* ---- Manual Payment Instructions ---- */}
+          {isManualPayment && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 mb-5">
+              <h3 className="font-bold text-dark mb-2">💳 Complete Your M‑Pesa Payment</h3>
+              <p className="text-sm text-muted mb-3">
+                Please send the exact amount (<strong className="text-dark">{formatKES(order.total)}</strong>) to:
+              </p>
+              <div className="bg-white rounded-lg p-4 border border-border space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted">Paybill Number:</span>
+                  <span className="font-bold text-dark">522533</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted">Account Number:</span>
+                  <span className="font-bold text-dark">7508897</span>
+                </div>
+                <div className="flex justify-between border-t border-border pt-2 mt-2">
+                  <span className="text-muted">Amount:</span>
+                  <span className="font-bold text-primary">{formatKES(order.total)}</span>
+                </div>
+              </div>
+              <p className="text-xs text-muted mt-3">
+                After payment, our team will confirm your order and contact you for delivery.
+              </p>
+            </div>
+          )}
 
           {/* What's next */}
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-5 text-sm text-dark">
