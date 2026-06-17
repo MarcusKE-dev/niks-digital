@@ -53,13 +53,14 @@ export function ProductCard({ product, className, priority = false }: ProductCar
       className={cn('product-card-base block group focus-ring', className)}
       aria-label={`View ${product.name}`}
     >
-      <div className="relative bg-surface overflow-hidden" style={{ height: 150 }}>
+      {/* ── IMAGE AREA (larger, less padding) ── */}
+      <div className="relative bg-surface overflow-hidden" style={{ height: 200 }}>
         <Image
           src={productImageSrc(product.thumbnail)}
           alt={`${product.name} — available at Niks Digital Connections`}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          className="object-contain p-4 transition-transform duration-slow group-hover:scale-105"
+          className="object-contain p-2 transition-transform duration-slow group-hover:scale-105"
           loading={priority ? 'eager' : 'lazy'}
           priority={priority}
         />
@@ -100,7 +101,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
           {product.name}
         </h3>
 
-        {/* Stars removed – as requested */}
+        {/* Stars removed */}
 
         <div className="flex items-baseline gap-2 mb-3">
           <span className="text-sm font-bold text-dark">
@@ -113,7 +114,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
           )}
         </div>
 
-        {/* Centered button – red always, narrower, centered */}
+        {/* Centered button */}
         <div className="flex justify-center">
           <button
             onClick={handleAddToCart}
