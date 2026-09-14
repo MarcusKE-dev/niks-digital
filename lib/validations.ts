@@ -190,7 +190,7 @@ export const categorySchema = z.object({
 
   description: z.string().max(500).optional(),
 
-  icon: z.string().max(10, 'Use an emoji or short icon name').optional(),
+  icon: z.string().max(10, 'Use a short icon key').optional(),
 
   display_order: z.number().int().min(0).max(100),
 })

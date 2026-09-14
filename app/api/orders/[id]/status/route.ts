@@ -1,15 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin }             from '@/lib/supabase-admin'
-import { requireAdmin }              from '@/lib/auth'
+import { NextRequest } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import { enforceRateLimit } from '@/lib/rate-limit'
+import { isUuid, jsonError, jsonOk } from '@/lib/security'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  // Status polling is called by the customer's browser — no admin check needed here
+  // The customer's browser polls this while waiting for an STK push,
+  // so it stays unauthenticated — but it is capped so it cannot be used
+  // to enumerate order IDs or to flood the database.
+  const limited = enforceRateLimit(req, 'order-status', 120, 60_000)
+  if (limited) return limited
+
+  if (!isUuid(params.id)) return jsonError('Not found', 404)
+
+  // Deliberately narrow: no customer details, no totals — only what the
+  // waiting screen needs.
   const { data } = await supabaseAdmin
     .from('orders')
     .select('id,payment_status,order_status')
     .eq('id', params.id)
-    .single()
+    .maybeSingle()
 
-  if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  return NextResponse.json(data)
+  if (!data) return jsonError('Not found', 404)
+
+  return jsonOk(data)
 }

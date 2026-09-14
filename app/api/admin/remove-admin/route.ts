@@ -1,30 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { createSupabaseServer } from '@/lib/supabase-server'
+import { isOwnerEmail, requireOwner } from '@/lib/auth'
+import { enforceRateLimit } from '@/lib/rate-limit'
+import { isUuid, jsonError, jsonOk, readJson, serverError, verifySameOrigin } from '@/lib/security'
 
 export async function POST(req: NextRequest) {
-  const supabase = createSupabaseServer()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const origin = verifySameOrigin(req)
+  if (origin) return origin
 
-  const ALLOWED_ADMIN_EMAIL = process.env.ADMIN_EMAILS?.split(',')[0] || 'mwaura.ke.john@gmail.com'
-  if (user.email !== ALLOWED_ADMIN_EMAIL) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const guard = await requireOwner()
+  if (!guard.ok) return guard.response
+
+  const limited = enforceRateLimit(req, 'admin-remove-admin', 20, 60 * 60_000)
+  if (limited) return limited
+
+  const body = await readJson<{ userId?: unknown }>(req)
+  if (!isUuid(body?.userId)) return jsonError('Valid user ID required', 400)
+
+  const userId = body.userId
+
+  // Locking yourself out of the panel is not recoverable from the UI.
+  if (userId === guard.ctx.user.id) {
+    return jsonError('You cannot remove your own admin access', 400)
   }
 
-  const { userId } = await req.json()
-  if (!userId) return NextResponse.json({ error: 'User ID required' }, { status: 400 })
-
-  // Remove from admins table (do not delete auth user)
-  const { error } = await supabaseAdmin
+  // Nor may the owner account be demoted by anyone.
+  const { data: target } = await supabaseAdmin
     .from('admins')
-    .delete()
+    .select('email')
     .eq('user_id', userId)
+    .maybeSingle()
 
-  if (error) {
-    console.error('Remove admin error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  if (target && isOwnerEmail(target.email)) {
+    return jsonError('The owner account cannot be removed', 400)
   }
 
-  return NextResponse.json({ success: true })
+  // Remove from admins table (the auth user is left intact).
+  const { error } = await supabaseAdmin.from('admins').delete().eq('user_id', userId)
+
+  if (error) return serverError('Remove Admin', error, 'Failed to remove admin')
+
+  return jsonOk({ success: true })
 }

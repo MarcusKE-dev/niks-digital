@@ -12,7 +12,7 @@ export function MobileFilterButton() {
         onClick={toggle}
         className="flex items-center gap-2 h-10 px-5 bg-white border border-border rounded-full text-sm font-semibold hover:border-primary transition-colors"
       >
-        ⚙️ Filters
+        Filters
       </button>
     </div>
   )

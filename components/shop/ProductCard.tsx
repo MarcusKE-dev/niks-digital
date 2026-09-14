@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ShoppingCart } from 'lucide-react'
-import { cn, formatKES, calculateSavings, productImageSrc } from '@/lib/utils'
+import { cn, formatKES, calculateSavings } from '@/lib/utils'
+import { ProductImage } from '@/components/shop/ProductImage'
 import { useCartStore, useIsInCart } from '@/store/cartStore'
 import { useToast } from '@/components/ui/Toaster'
 import { ProductBadge } from '@/components/ui/Badge'
@@ -53,16 +53,13 @@ export function ProductCard({ product, className, priority = false }: ProductCar
       className={cn('product-card-base block group focus-ring', className)}
       aria-label={`View ${product.name}`}
     >
-      {/* ── IMAGE AREA (larger, less padding) ── */}
+      {/* ── IMAGE AREA — fills edge to edge for any aspect ratio ── */}
       <div className="relative bg-surface overflow-hidden" style={{ height: 200 }}>
-        <Image
-          src={productImageSrc(product.thumbnail)}
+        <ProductImage
+          src={product.thumbnail}
           alt={`${product.name} — available at Niks Digital Connections`}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          className="object-contain p-2 transition-transform duration-slow group-hover:scale-105"
-          loading={priority ? 'eager' : 'lazy'}
           priority={priority}
+          imageClassName="transition-transform duration-slow group-hover:scale-105"
         />
         <ProductBadge badge={product.badge} />
         <button

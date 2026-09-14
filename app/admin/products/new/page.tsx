@@ -3,6 +3,7 @@ import { compressImage, PRESETS } from '@/lib/compress-image'
 import { useState, useEffect } from 'react'
 import { useRouter }           from 'next/navigation'
 import Link                    from 'next/link'
+import { Upload }              from 'lucide-react'
 import { supabaseBrowser, STORAGE_BUCKETS } from '@/lib/supabase'
 import { toSlug }              from '@/lib/utils'
 import { useToast }            from '@/components/ui/Toaster'
@@ -199,7 +200,7 @@ export default function NewProductPage() {
               <h2 className="font-bold text-dark mb-3">Product Images</h2>
               <label className={`block border-2 border-dashed rounded-lg p-5 text-center cursor-pointer transition-colors ${uploading ? 'border-primary bg-orange-50' : 'border-border hover:border-primary'}`}>
                 <input type="file" accept="image/*" multiple onChange={handleImageUpload} className="sr-only" />
-                <p className="text-2xl mb-1" aria-hidden>{uploading ? '⏳' : '📸'}</p>
+                <p className="text-2xl mb-1" aria-hidden><Upload className="h-5 w-5" /></p>
                 <p className="text-sm font-medium text-dark">{uploading ? 'Uploading…' : 'Click to upload images'}</p>
                 <p className="text-xs text-muted mt-0.5">JPG, PNG, WebP · Max 5MB each</p>
               </label>

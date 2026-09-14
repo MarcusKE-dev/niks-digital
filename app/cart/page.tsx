@@ -2,7 +2,7 @@
 
 import Link              from 'next/link'
 import Image             from 'next/image'
-import { Trash2, ShoppingBag } from 'lucide-react'
+import { CreditCard, Lock, ShoppingBag, Smartphone, Trash2 } from 'lucide-react'
 import { useCartStore }  from '@/store/cartStore'
 import { Navbar }        from '@/components/layout/Navbar'
 import { Footer }        from '@/components/layout/Footer'
@@ -113,11 +113,11 @@ export default function CartPage() {
                 </Link>
 
                 <div className="mt-5 pt-4 border-t border-border flex items-center justify-center gap-3 text-xs text-muted">
-                  <span>🔒 Secure Checkout</span>
+                  <span><Lock className="h-4 w-4 inline" /> Secure Checkout</span>
                   <span>·</span>
-                  <span>📱 M-Pesa</span>
+                  <span><Smartphone className="h-4 w-4 inline" /> M-Pesa</span>
                   <span>·</span>
-                  <span>💳 Card</span>
+                  <span><CreditCard className="h-4 w-4 inline" /> Card</span>
                 </div>
               </div>
             </div>

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Smartphone, Package, CreditCard, MapPin, Lock } from 'lucide-react'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -105,6 +106,8 @@ export default function CheckoutPage() {
   const router = useRouter()
   const toast = useToast()
   const { items, subtotal, clearCart, totalItems } = useCartStore()
+  const cartHydrated = useCartStore.persist.hasHydrated()
+  const hydratedItemCount = items.length
   const [step, setStep] = useState<Step>('form')
   const [orderId, setOrderId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -129,6 +132,20 @@ export default function CheckoutPage() {
   const watchMethod = form.watch('payment_method')
   const watchPhone = form.watch('customer_phone')
   const countyError = form.formState.errors.delivery_area?.message
+
+  if (!cartHydrated) {
+    return (
+      <>
+        <Navbar />
+        <main className="bg-surface min-h-screen py-16">
+          <div className="container-site text-center">
+            <div className="animate-pulse text-sm font-bold text-dark">Loading checkout…</div>
+          </div>
+        </main>
+        <Footer />
+      </>
+    )
+  }
 
   if (items.length === 0 && step === 'form') {
     return (
@@ -247,7 +264,7 @@ export default function CheckoutPage() {
         <main className="bg-surface min-h-screen flex items-center justify-center py-16">
           <div className="bg-white border border-border rounded-xl p-10 max-w-md w-full text-center mx-4">
             <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
-              <span className="text-3xl">📱</span>
+              <span className="text-3xl"><Smartphone className="h-7 w-7" /></span>
             </div>
             <h2 className="text-xl font-extrabold text-dark mb-2">Check Your Phone!</h2>
             <p className="text-sm text-muted leading-relaxed mb-6">
@@ -360,7 +377,7 @@ export default function CheckoutPage() {
                     </p>
                       {/* Delivery zones info */}
                   <div className="bg-surface border border-border rounded-xl p-4 mb-4 space-y-2.5">
-                    <p className="text-xs font-bold text-dark mb-2">📦 Delivery Zones</p>
+                    <p className="text-xs font-bold text-dark mb-2"><Package className="h-4 w-4 inline" /> Delivery Zones</p>
                     <div className="flex items-start gap-2.5">
                       <span className="text-success font-bold text-sm flex-shrink-0">✓</span>
                       <div>
@@ -376,7 +393,7 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-2.5">
-                      <span className="text-muted font-bold text-sm flex-shrink-0">📦</span>
+                      <span className="text-muted font-bold text-sm flex-shrink-0"><Package className="h-4 w-4" /></span>
                       <div>
                         <p className="text-xs font-semibold text-dark">Countrywide — Upfront Fee · 1–3 Days</p>
                         <p className="text-xs text-muted">Shipped via G4S or Wells Fargo. Fee confirmed before dispatch.</p>
@@ -394,26 +411,29 @@ export default function CheckoutPage() {
                   <h2 className="font-extrabold text-dark mb-5">3. Payment Method</h2>
                   <div className="space-y-3 mb-5">
                     {[
-                      { value: 'mpesa', label: 'M-Pesa (Paybill)', icon: '📱', sub: 'Pay via Paybill 522533 – Account 7508897' },
-                      { value: 'cash',  label: 'Cash on Delivery', icon: '💵', sub: 'Kikuyu & surrounding areas only' },
-                    ].map(opt => (
-                      <label key={opt.value} className={cn(
-                        'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all',
-                        watchMethod === opt.value ? 'border-primary bg-orange-50' : 'border-border hover:border-gray-300'
-                      )}>
-                        <input type="radio" value={opt.value} {...form.register('payment_method')} className="accent-primary" />
-                        <span className="text-xl" aria-hidden>{opt.icon}</span>
-                        <div>
-                          <p className="text-sm font-bold text-dark">{opt.label}</p>
-                          <p className="text-xs text-muted">{opt.sub}</p>
-                        </div>
-                      </label>
-                    ))}
+                      { value: 'mpesa', label: 'M-Pesa (Paybill)', icon: Smartphone, sub: 'Pay via Paybill 522533 – Account 7508897' },
+                      { value: 'cash',  label: 'Cash on Delivery', icon: MapPin, sub: 'Kikuyu & surrounding areas only' },
+                    ].map(opt => {
+                      const Icon = opt.icon
+                      return (
+                        <label key={opt.value} className={cn(
+                          'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all',
+                          watchMethod === opt.value ? 'border-primary bg-orange-50' : 'border-border hover:border-gray-300'
+                        )}>
+                          <input type="radio" value={opt.value} {...form.register('payment_method')} className="accent-primary" />
+                          <span className="text-xl" aria-hidden><Icon className="h-5 w-5" /></span>
+                          <div>
+                            <p className="text-sm font-bold text-dark">{opt.label}</p>
+                            <p className="text-xs text-muted">{opt.sub}</p>
+                          </div>
+                        </label>
+                      )
+                    })}
                   </div>
 
                   {/* Card Coming Soon – disabled */}
                   <div className="flex items-center gap-4 p-4 border-2 border-dashed border-border rounded-xl opacity-50 cursor-not-allowed">
-                    <span className="text-xl">💳</span>
+                    <span className="text-xl"><CreditCard className="h-5 w-5" /></span>
                     <div>
                       <p className="text-sm font-bold text-dark">Card Payment</p>
                       <p className="text-xs text-muted">Coming soon — not available yet</p>

@@ -4,6 +4,7 @@ import { supabaseBrowser }     from '@/lib/supabase'
 import { useToast }            from '@/components/ui/Toaster'
 import { STORAGE_BUCKETS }     from '@/lib/supabase'
 import { compressImage, PRESETS } from '@/lib/compress-image'
+import { X } from 'lucide-react'
 
 export default function SettingsPage() {
   const toast = useToast()
@@ -152,7 +153,7 @@ async function uploadBannerImage(e: React.ChangeEvent<HTMLInputElement>) {
                     className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"
                     aria-label="Remove image"
                   >
-                    ✕
+                    <X className="h-3.5 w-3.5" aria-hidden />
                   </button>
                 </div>
               ))}
@@ -160,7 +161,7 @@ async function uploadBannerImage(e: React.ChangeEvent<HTMLInputElement>) {
             <label className={`block border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${uploading ? 'border-primary bg-orange-50' : 'border-border hover:border-primary'}`}>
               <input type="file" accept="image/*" onChange={uploadBannerImage} className="sr-only" />
               <p className="text-sm font-medium text-dark">
-                {uploading ? '⏳ Uploading...' : '📸 Add banner image'}
+                {uploading ? 'Uploading...' : 'Add banner image'}
               </p>
               <p className="text-xs text-muted mt-1">JPG, PNG, WebP — Recommended size: 800x500px</p>
             </label>
@@ -241,7 +242,7 @@ async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
       </div>
       <label className={`flex-shrink-0 h-9 px-4 rounded-full text-xs font-semibold cursor-pointer flex items-center gap-2 transition-colors ${uploading ? 'bg-surface text-muted' : 'bg-dark text-white hover:bg-dark-400'}`}>
         <input type="file" accept="image/*" onChange={handleUpload} className="sr-only" disabled={uploading} />
-        {uploading ? '⏳ Uploading...' : '📸 Upload'}
+        {uploading ? 'Uploading...' : 'Upload'}
       </label>
     </div>
   )

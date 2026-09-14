@@ -1,6 +1,7 @@
 import type { Metadata }        from 'next'
 import Link                     from 'next/link'
 import { Suspense }             from 'react'
+import { CheckCircle2, CookingPot, Headphones, MessageCircle, Monitor, Plug, Smartphone, Tv, Truck, Watch, Wrench } from 'lucide-react'
 import { createSupabaseServer } from '@/lib/supabase-server'
 import { Navbar }               from '@/components/layout/Navbar'
 import { Footer }               from '@/components/layout/Footer'
@@ -17,10 +18,10 @@ export const metadata: Metadata = {
 export const revalidate = 0
 
 const FEATURES = [
-  { icon: '🚚', title: 'Free Kikuyu Delivery',   sub: 'On orders above KES 10,000' },
-  { icon: '✅', title: '100% Genuine Products',  sub: 'Authorized dealer stock only' },
-  { icon: '📱', title: 'M-Pesa & Card Payments', sub: 'Fast and secure checkout' },
-  { icon: '🔧', title: 'After-Sales Support',     sub: 'Installation & warranty help' },
+  { icon: Truck, title: 'Free Kikuyu Delivery',   sub: 'On orders above KES 10,000' },
+  { icon: CheckCircle2, title: '100% Genuine Products',  sub: 'Authorized dealer stock only' },
+  { icon: Smartphone, title: 'M-Pesa & Card Payments', sub: 'Fast and secure checkout' },
+  { icon: Wrench, title: 'After-Sales Support',     sub: 'Installation & warranty help' },
 ]
 
 const TESTIMONIALS = [
@@ -84,13 +85,13 @@ export default async function HomePage() {
   const hasText   = !!settings.hero_title || !!settings.hero_subtitle
 
   const CATEGORIES = [
-    { slug: 'phones',      label: 'Phones & Accessories', icon: '📱', count: '50+' },
-    { slug: 'computers',   label: 'Computer Accessories',  icon: '💻', count: '30+' },
-    { slug: 'tvs',         label: 'Televisions',           icon: '📺', count: '20+' },
-    { slug: 'audio',       label: 'Audio & Speakers',      icon: '🎧', count: '15+' },
-    { slug: 'kitchen',     label: 'Kitchen Appliances',    icon: '🍳', count: '25+' },
-    { slug: 'electronics', label: 'Basic Electronics',     icon: '🔌', count: '40+' },
-    { slug: 'wearables',   label: 'Smart Watches',         icon: '⌚', count: '10+' },
+    { slug: 'phones',      label: 'Phones & Accessories', icon: Smartphone, count: '50+' },
+    { slug: 'computers',   label: 'Computer Accessories',  icon: Monitor, count: '30+' },
+    { slug: 'tvs',         label: 'Televisions',           icon: Tv, count: '20+' },
+    { slug: 'audio',       label: 'Audio & Speakers',      icon: Headphones, count: '15+' },
+    { slug: 'kitchen',     label: 'Kitchen Appliances',    icon: CookingPot, count: '25+' },
+    { slug: 'electronics', label: 'Basic Electronics',     icon: Plug, count: '40+' },
+    { slug: 'wearables',   label: 'Smart Watches',         icon: Watch, count: '10+' },
   ].map(cat => ({
     ...cat,
     image: settings[`category_image_${cat.slug}`] ?? `/categories/${cat.slug}.jpg`,
@@ -137,7 +138,7 @@ export default async function HomePage() {
                   <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
                     target="_blank" rel="noopener noreferrer"
                     className="h-11 px-6 bg-white border border-border text-dark font-semibold rounded-full text-sm flex items-center gap-2 hover:border-primary hover:text-primary transition-colors">
-                    💬 WhatsApp Us
+                    <MessageCircle className="h-4 w-4" /> WhatsApp Us
                   </a>
                 </div>
               </div>
@@ -211,7 +212,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {FEATURES.map(f => (
                 <div key={f.title} className="flex items-start gap-3">
-                  <span className="text-2xl flex-shrink-0 mt-0.5">{f.icon}</span>
+                  <span className="text-2xl flex-shrink-0 mt-0.5"><f.icon className="h-6 w-6" /></span>
                   <div>
                     <p className="text-sm font-bold text-dark">{f.title}</p>
                     <p className="text-xs text-muted mt-0.5 leading-snug">{f.sub}</p>

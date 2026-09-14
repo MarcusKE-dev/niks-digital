@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { CreditCard, Package, MessageCircle } from 'lucide-react'
 import type { Metadata } from 'next'
-import { createSupabaseServer } from '@/lib/supabase-server'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import { isUuid } from '@/lib/security'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { formatKES, formatDate } from '@/lib/utils'
@@ -14,12 +16,17 @@ interface PageProps {
 }
 
 export default async function OrderConfirmPage({ params, searchParams }: PageProps) {
-  const supabase = createSupabaseServer()
-  const { data: order } = await supabase
+  // Reject anything that is not a UUID before it reaches the database.
+  if (!isUuid(params.id)) notFound()
+
+  // Read with the service role: the shopper has no account, so the
+  // order's unguessable UUID in the URL is what authorises this page.
+  // RLS keeps this table closed to anon clients (migration 002).
+  const { data: order } = await supabaseAdmin
     .from('orders')
     .select('*,order_items(*)')
     .eq('id', params.id)
-    .single()
+    .maybeSingle()
 
   if (!order) notFound()
 
@@ -51,7 +58,7 @@ export default async function OrderConfirmPage({ params, searchParams }: PagePro
           {/* ---- Manual Payment Instructions ---- */}
           {isManualPayment && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 mb-5">
-              <h3 className="font-bold text-dark mb-2">💳 Complete Your M‑Pesa Payment</h3>
+              <h3 className="font-bold text-dark mb-2"><CreditCard className="h-4 w-4 inline" /> Complete Your M‑Pesa Payment</h3>
               <p className="text-sm text-muted mb-3">
                 Please send the exact amount (<strong className="text-dark">{formatKES(order.total)}</strong>) to:
               </p>
@@ -135,7 +142,7 @@ export default async function OrderConfirmPage({ params, searchParams }: PagePro
 
           {/* Track on WhatsApp */}
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-5">
-            <p className="font-bold text-dark mb-1">📦 Track Your Order</p>
+            <p className="font-bold text-dark mb-1"><Package className="h-4 w-4 inline" /> Track Your Order</p>
             <p className="text-sm text-muted leading-relaxed mb-3">
               Your order number is <strong className="text-dark font-mono">{order.order_number}</strong>.
               Send this number on WhatsApp to get live updates on your order status.
@@ -146,7 +153,7 @@ export default async function OrderConfirmPage({ params, searchParams }: PagePro
               rel="noopener noreferrer"
               className="h-11 px-4 bg-green-500 text-white font-semibold text-sm rounded-full flex items-center justify-center gap-2 hover:bg-green-600 transition-colors"
             >
-              💬 Track on WhatsApp
+              <MessageCircle className="h-4 w-4 inline" /> Track on WhatsApp
             </a>
           </div>
 

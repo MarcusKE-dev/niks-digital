@@ -229,14 +229,49 @@ export function getPaymentStatusColor(status: PaymentStatus): string {
 
 // ── IMAGES ───────────────────────────────────────────────────
 
+export const PRODUCT_PLACEHOLDER = '/images/placeholder-product.svg'
+
 /**
- * Return a product placeholder if the image URL is empty.
+ * Hosts next/image is configured to optimise. Must stay in step with
+ * `remotePatterns` in next.config.mjs.
+ */
+const ALLOWED_IMAGE_HOSTS = [
+  /^([a-z0-9-]+\.)*supabase\.co$/i,
+  /^res\.cloudinary\.com$/i,
+  /^picsum\.photos$/i,
+]
+
+/**
+ * Resolve a product image URL to something next/image will accept.
+ *
+ * Handing next/image a host that is not in `remotePatterns` throws and
+ * takes the whole page down with it, and an image URL is data an admin
+ * (or, before the order API was tightened, a customer) could set. So an
+ * unknown or malformed URL falls back to the placeholder instead.
  */
 export function productImageSrc(url: string | null | undefined): string {
-  if (!url || url.trim() === '') {
-    return '/images/placeholder-product.svg'
+  if (!url || url.trim() === '') return PRODUCT_PLACEHOLDER
+
+  const trimmed = url.trim()
+
+  // Local assets under /public.
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) return trimmed
+
+  let parsed: URL
+  try {
+    parsed = new URL(trimmed)
+  } catch {
+    return PRODUCT_PLACEHOLDER
   }
-  return url
+
+  // No data:, blob: or javascript: URLs in an image slot.
+  if (parsed.protocol !== 'https:') return PRODUCT_PLACEHOLDER
+
+  if (!ALLOWED_IMAGE_HOSTS.some(re => re.test(parsed.hostname))) {
+    return PRODUCT_PLACEHOLDER
+  }
+
+  return trimmed
 }
 
 /**

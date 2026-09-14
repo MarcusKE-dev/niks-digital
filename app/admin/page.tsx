@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { AlertTriangle, Clock3, Package, ShoppingCart, Wallet } from 'lucide-react'
 import { createSupabaseServer } from '@/lib/supabase-server'
 import { formatKES, formatDate, getOrderStatusColor, getOrderStatusLabel } from '@/lib/utils'
 
@@ -32,10 +33,10 @@ export default async function AdminDashboard() {
   const revenue = (revenueData ?? []).reduce((s, o) => s + Number(o.total), 0)
 
   const STATS = [
-    { label: 'Total Orders', value: totalOrders ?? 0, icon: '🛒', color: 'bg-blue-50 border-blue-200', link: '/admin/orders' },
-    { label: 'Revenue (Paid)', value: formatKES(revenue), icon: '💰', color: 'bg-green-50 border-green-200', link: '/admin/orders?payment_status=paid' },
-    { label: 'Active Products', value: totalProducts ?? 0, icon: '📦', color: 'bg-orange-50 border-orange-200', link: '/admin/products' },
-    { label: 'Pending Orders', value: pendingCount ?? 0, icon: '⏳', color: 'bg-red-50 border-red-200', link: '/admin/orders?status=new' },
+    { label: 'Total Orders', value: totalOrders ?? 0, icon: ShoppingCart, color: 'bg-blue-50 border-blue-200', link: '/admin/orders' },
+    { label: 'Revenue (Paid)', value: formatKES(revenue), icon: Wallet, color: 'bg-green-50 border-green-200', link: '/admin/orders?payment_status=paid' },
+    { label: 'Active Products', value: totalProducts ?? 0, icon: Package, color: 'bg-orange-50 border-orange-200', link: '/admin/products' },
+    { label: 'Pending Orders', value: pendingCount ?? 0, icon: Clock3, color: 'bg-red-50 border-red-200', link: '/admin/orders?status=new' },
   ]
 
   return (
@@ -43,7 +44,7 @@ export default async function AdminDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-extrabold text-dark">Dashboard</h1>
-          <p className="text-sm text-muted mt-0.5">Welcome back. Here's what's happening.</p>
+          <p className="text-sm text-muted mt-0.5">Welcome back. Here’s what’s happening.</p>
         </div>
         <Link href="/admin/products/new" className="h-10 px-5 bg-primary text-white font-semibold text-sm rounded-full flex items-center gap-2 hover:bg-primary-600 transition-colors">
           + Add Product
@@ -52,13 +53,16 @@ export default async function AdminDashboard() {
 
       {/* Stats cards – clickable */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {STATS.map(s => (
-          <Link key={s.label} href={s.link} className={`border rounded-xl p-5 ${s.color} hover:shadow-md transition-shadow`}>
-            <p className="text-2xl mb-2" aria-hidden>{s.icon}</p>
-            <p className="text-2xl font-extrabold text-dark">{s.value}</p>
-            <p className="text-xs text-muted mt-1">{s.label}</p>
-          </Link>
-        ))}
+        {STATS.map(s => {
+          const Icon = s.icon
+          return (
+            <Link key={s.label} href={s.link} className={`border rounded-xl p-5 ${s.color} hover:shadow-md transition-shadow`}>
+              <div className="mb-2" aria-hidden><Icon className="h-7 w-7 text-dark" /></div>
+              <p className="text-2xl font-extrabold text-dark">{s.value}</p>
+              <p className="text-xs text-muted mt-1">{s.label}</p>
+            </Link>
+          )
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -104,7 +108,10 @@ export default async function AdminDashboard() {
         {/* Low stock */}
         <div className="bg-white border border-border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between p-5 border-b border-border">
-            <h2 className="font-extrabold text-dark">⚠️ Low Stock</h2>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              <h2 className="font-extrabold text-dark">Low Stock</h2>
+            </div>
             <Link href="/admin/products" className="text-xs text-primary hover:underline">Manage →</Link>
           </div>
           <div className="divide-y divide-border">

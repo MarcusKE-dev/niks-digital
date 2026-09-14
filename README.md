@@ -91,8 +91,17 @@ npm install
 
 1. In Supabase dashboard → **SQL Editor**
 2. Paste contents of `supabase/migrations/001_initial_schema.sql` → **Run**
-3. Paste contents of `supabase/seed.sql` → **Run**
-4. Confirm: `category_count = 8`, `product_count = 24`
+3. Paste contents of `supabase/migrations/002_security_hardening.sql` → **Run**
+4. Paste contents of `supabase/seed.sql` → **Run**
+5. Confirm: `category_count = 8`, `product_count = 24`
+
+> **`002_security_hardening.sql` is required, not optional.** Migration 001
+> granted every write to `auth.role() = 'authenticated'`, which in Supabase
+> means *any* account that can sign in — and the key that lets anyone sign in
+> ships to every browser. Until 002 is applied, a stranger with an account can
+> edit products, read every customer's name, phone and address, and change
+> order statuses. 002 re-points all of it at real admin membership. It is
+> safe to re-run.
 
 ### 4. Set environment variables
 
@@ -133,23 +142,48 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Admin Panel Setup
 
-### Create admin user
+### Create the first admin
 
 1. Go to Supabase → **Authentication → Users** → Invite user
-2. Use email: `admin@niksdigital.co.ke`
-3. Set a strong password
+2. Use the address you set as `ADMIN_EMAIL` — that account is the **owner**
+3. Set a strong password (12+ characters, mixed case and a digit)
+4. In **SQL Editor**, grant it admin access:
+
+```sql
+insert into admins (user_id, email)
+select id, email from auth.users where email = 'you@example.com'
+on conflict (user_id) do nothing;
+```
+
+An auth account on its own cannot open `/admin` — it needs a row in `admins`.
+After this, further admins are added from **Admin → Team**, which creates the
+auth user and the `admins` row together.
+
+### Two levels of access
+
+| Level | Who | Can do |
+|-------|-----|--------|
+| **Owner** | the address in `ADMIN_EMAIL` | everything, plus add and remove admins |
+| **Admin** | any row in `admins` | run the shop: products, orders, settings |
+
+### Recommended Supabase settings
+
+- **Authentication → Providers → Email**: turn **off** public sign-ups. Nothing
+  in this shop needs customer accounts, and leaving them on lets strangers mint
+  `authenticated` sessions.
+- **Authentication → Rate limits**: keep the defaults enabled.
 
 ### Access admin panel
 
 Go to `/admin/login` and sign in with the credentials above.
 
 **Admin capabilities:**
-- ✅ Add, edit, delete products
-- ✅ Upload product images to Supabase Storage
-- ✅ Update order statuses
-- ✅ View all orders and revenue
-- ✅ Monitor low stock alerts
-- ✅ WhatsApp customers directly from order detail
+- Add, edit, delete products
+- Upload product images to Supabase Storage
+- Update order statuses
+- View all orders and revenue
+- Monitor low stock alerts
+- WhatsApp customers directly from order detail
 
 ---
 
@@ -248,6 +282,35 @@ npm run type-check   # Check TypeScript errors without building
 npm run lint         # Run ESLint
 npm run postbuild    # Auto-generates sitemap.xml after build
 ```
+
+---
+
+## Security
+
+Protections built into the app:
+
+| Area | Protection |
+|------|-----------|
+| Admin pages & `/api/admin/*` | Middleware verifies the JWT with `getUser()`, then requires an `admins` row |
+| Admin API routes | Re-check admin/owner membership themselves — the middleware is not the only gate |
+| Admin login | Server-side and rate limited: 15 attempts per IP and 8 per account per 15 min |
+| Mutating requests | Same-origin (`Origin`/`Referer`) check on every POST/DELETE |
+| Order creation | Prices, names and images are re-read from the database; the client's numbers are ignored |
+| Order creation | Zod-validated, deduplicated by product, capped at 30 lines, 15 orders per IP per 10 min |
+| M-Pesa STK push | Amount comes from the order row, never the request; capped per IP and per order |
+| M-Pesa callback | Safaricom IP allowlist (no sandbox bypass in production) and payment-amount verification |
+| Database | RLS scoped to `public.is_admin()`; `decrement_stock` is service-role only |
+| Storage | Public read, admin-only write; 5 MB cap, raster images only |
+| Responses | Database errors are logged, never returned to the caller |
+| Headers | CSP, HSTS, `frame-ancestors 'none'`, `nosniff`, Permissions-Policy |
+
+Never commit `.env.local`. `SUPABASE_SERVICE_ROLE_KEY` bypasses RLS entirely —
+it belongs only in server environment variables, never in anything `NEXT_PUBLIC_`.
+
+Rate limits are held in the Node process, so each serverless instance counts
+separately. That is enough for the single-attacker floods this shop faces; if
+traffic ever justifies it, swap the store in `lib/rate-limit.ts` for Redis and
+no call site needs to change.
 
 ---
 

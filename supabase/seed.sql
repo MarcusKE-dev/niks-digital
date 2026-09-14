@@ -7,14 +7,14 @@
 
 INSERT INTO categories (name, slug, description, icon, display_order)
 VALUES
-  ('Televisions',        'televisions',   'LED, Smart, and Android TVs from 24" to 75". Stream Netflix, YouTube and more.',      '📺', 1),
-  ('Refrigerators',      'refrigerators', 'Single-door, double-door, and side-by-side fridges. Energy-saving compressors.',      '🧊', 2),
-  ('Cookers & Ovens',    'cookers',       'Gas cookers, electric cookers, built-in ovens, and range cookers.',                   '🔥', 3),
-  ('Laptops & Computers','laptops',       'Laptops, desktop PCs, and accessories for work, school, and business.',               '💻', 4),
-  ('Mobile Phones',      'phones',        'Smartphones and accessories from Samsung, Tecno, Infinix, and more.',                 '📱', 5),
-  ('Audio & Speakers',   'audio',         'Home theatre systems, Bluetooth speakers, soundbars, and headphones.',                '🔊', 6),
-  ('Cameras',            'cameras',       'DSLRs, mirrorless cameras, camcorders, and photography accessories.',                 '📷', 7),
-  ('Kitchen Appliances', 'kitchen',       'Microwaves, kettles, blenders, air fryers, rice cookers, and more.',                  '🍳', 8)
+  ('Televisions',        'televisions',   'LED, Smart, and Android TVs from 24" to 75". Stream Netflix, YouTube and more.',      'tv', 1),
+  ('Refrigerators',      'refrigerators', 'Single-door, double-door, and side-by-side fridges. Energy-saving compressors.',      'refrigerator', 2),
+  ('Cookers & Ovens',    'cookers',       'Gas cookers, electric cookers, built-in ovens, and range cookers.',                   'cooker', 3),
+  ('Laptops & Computers','laptops',       'Laptops, desktop PCs, and accessories for work, school, and business.',               'computer', 4),
+  ('Mobile Phones',      'phones',        'Smartphones and accessories from Samsung, Tecno, Infinix, and more.',                 'phone', 5),
+  ('Audio & Speakers',   'audio',         'Home theatre systems, Bluetooth speakers, soundbars, and headphones.',                'audio', 6),
+  ('Cameras',            'cameras',       'DSLRs, mirrorless cameras, camcorders, and photography accessories.',                 'camera', 7),
+  ('Kitchen Appliances', 'kitchen',       'Microwaves, kettles, blenders, air fryers, rice cookers, and more.',                  'kitchen', 8)
 ON CONFLICT (slug) DO NOTHING;
 
 

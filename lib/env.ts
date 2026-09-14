@@ -11,6 +11,11 @@ const PRODUCTION_REQUIRED = [
   'DARAJA_PASSKEY',
   'DARAJA_CALLBACK_URL',
   'NEXT_PUBLIC_WHATSAPP_NUMBER',
+  // Identifies the owner account. Without it the owner-only routes
+  // (add/remove admin) fail closed for everybody.
+  'ADMIN_EMAIL',
+  // Used to validate the Origin header on state-changing requests.
+  'NEXT_PUBLIC_SITE_URL',
 ] as const
 
 export function validateEnv() {

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import Link                  from 'next/link'
 import { usePathname }       from 'next/navigation'
+import { Clipboard, Heart, Home, Info, MessageCircle, Moon, Phone, ShoppingBag, X } from 'lucide-react'
 
 interface MobileMenuProps {
   isOpen:  boolean
@@ -10,11 +11,11 @@ interface MobileMenuProps {
 }
 
 const MAIN_LINKS = [
-  { href: '/',         label: 'Home',      icon: '🏠' },
-  { href: '/shop',     label: 'Shop',      icon: '🛍️' },
-  { href: '/wishlist', label: 'Wishlist',  icon: '❤️'  },
-  { href: '/about',    label: 'About Us',  icon: 'ℹ️'  },
-  { href: '/contact',  label: 'Contact',   icon: '📞' },
+  { href: '/',         label: 'Home',      icon: Home },
+  { href: '/shop',     label: 'Shop',      icon: ShoppingBag },
+  { href: '/wishlist', label: 'Wishlist',  icon: Heart },
+  { href: '/about',    label: 'About Us',  icon: Info },
+  { href: '/contact',  label: 'Contact',   icon: Phone },
 ] as const
 
 const CATEGORY_LINKS = [
@@ -86,9 +87,9 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <button
             onClick={onClose}
             aria-label="Close menu"
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:text-dark hover:bg-surface transition-colors text-xl font-light"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:text-dark hover:bg-surface transition-colors"
           >
-            ✕
+            <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
 
@@ -97,10 +98,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
           {/* Main links */}
           <nav aria-label="Main">
-            {MAIN_LINKS.map(({ href, label, icon }) => (
+            {MAIN_LINKS.map(({ href, label, icon: Icon }) => (
               <Link key={href} href={href} onClick={onClose}
                 className="flex items-center gap-3 px-5 py-3.5 text-sm font-semibold text-dark hover:bg-surface hover:text-primary transition-colors">
-                <span className="w-5 text-center">{icon}</span>
+                <span className="w-5 text-center"><Icon className="h-4 w-4" /></span>
                 {label}
               </Link>
             ))}
@@ -128,14 +129,14 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             onClick={toggleDark}
             className="flex items-center gap-3 px-5 py-3.5 w-full text-sm font-semibold text-dark hover:bg-surface transition-colors"
           >
-            <span className="w-5 text-center">🌙</span>
+            <Moon className="h-4 w-4" />
             Dark Mode
           </button>
 
           {/* Legal links */}
           <Link href="/legal" onClick={onClose}
             className="flex items-center gap-3 px-5 py-3 text-sm text-muted hover:text-primary transition-colors">
-            <span className="w-5 text-center">📋</span>
+            <Clipboard className="h-4 w-4" />
             Privacy · Terms · Returns
           </Link>
         </div>
@@ -149,7 +150,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             onClick={onClose}
             className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-green-500 text-white text-sm font-semibold hover:bg-green-600 transition-colors"
           >
-            💬 Chat on WhatsApp
+            <span className="hidden sm:inline">Chat on WhatsApp</span><MessageCircle className="h-4 w-4 sm:ml-2" />
           </a>
           <p className="text-center text-xs text-muted mt-3">
             Kikuyu Town · Mon–Sun 7am–10pm

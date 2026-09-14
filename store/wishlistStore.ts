@@ -1,5 +1,18 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+
+const safeBrowserStorage = createJSONStorage(() => ({
+  getItem: (name: string) => {
+    if (typeof window === 'undefined') return null
+    return localStorage.getItem(name)
+  },
+  setItem: (name: string, value: string) => {
+    if (typeof window !== 'undefined') localStorage.setItem(name, value)
+  },
+  removeItem: (name: string) => {
+    if (typeof window !== 'undefined') localStorage.removeItem(name)
+  },
+}))
 import type { ProductSummary } from '@/types'
 
 interface WishlistState {
@@ -24,7 +37,7 @@ export const useWishlistStore = create<WishlistState>()(
     }),
     {
       name: 'niks-wishlist',
-      storage: createJSONStorage(() => localStorage),
+      storage: safeBrowserStorage,
     }
   )
 )

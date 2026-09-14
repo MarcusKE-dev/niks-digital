@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Filter, ChevronDown, Check } from 'lucide-react'
+import { Filter, ChevronDown, Check, PackageSearch, X } from 'lucide-react'
 import { supabaseBrowser } from '@/lib/supabase'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
@@ -299,7 +299,7 @@ export default function ShopPage() {
                     {categories.map(cat => (
                       <label key={cat.slug} className="flex items-center gap-2 cursor-pointer">
                         <input type="radio" name="category" className="accent-primary" checked={tempCategory === cat.slug} onChange={() => setTempCategory(cat.slug)} />
-                        <span className="flex items-center gap-2 text-sm text-dark"><span>{cat.icon}</span><span>{cat.name}</span></span>
+                        <span className="text-sm text-dark">{cat.name}</span>
                       </label>
                     ))}
                   </div>
@@ -356,7 +356,7 @@ export default function ShopPage() {
                 </div>
               ) : (
                 <div className="text-center py-20 bg-white border border-border rounded-lg">
-                  <p className="text-3xl mb-3">🔍</p>
+                  <PackageSearch className="h-9 w-9 text-muted mx-auto mb-3" aria-hidden />
                   <p className="text-base font-semibold text-dark mb-1">No products found</p>
                   <a href="/shop" className="inline-flex h-10 px-5 bg-primary text-white text-sm font-semibold rounded-full">View All Products</a>
                 </div>
@@ -373,7 +373,7 @@ export default function ShopPage() {
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 max-h-[85vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-5">
               <h3 className="font-extrabold text-dark text-lg">Filters</h3>
-              <button onClick={() => setMobileFilterOpen(false)} className="w-8 h-8 flex items-center justify-center text-muted hover:text-dark text-xl">✕</button>
+              <button onClick={() => setMobileFilterOpen(false)} aria-label="Close filters" className="w-8 h-8 flex items-center justify-center text-muted hover:text-dark"><X className="h-5 w-5" aria-hidden /></button>
             </div>
 
             {/* Categories (radio) */}
@@ -387,7 +387,7 @@ export default function ShopPage() {
                 {categories.map(cat => (
                   <label key={cat.slug} className="flex items-center gap-2">
                     <input type="radio" name="mobile-cat" className="accent-primary" checked={tempCategory === cat.slug} onChange={() => setTempCategory(cat.slug)} />
-                    <span className="flex items-center gap-2 text-sm text-dark"><span>{cat.icon}</span><span>{cat.name}</span></span>
+                    <span className="text-sm text-dark">{cat.name}</span>
                   </label>
                 ))}
               </div>

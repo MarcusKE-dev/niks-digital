@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { Heart } from 'lucide-react'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { useCartStore }     from '@/store/cartStore'
 import { Navbar }           from '@/components/layout/Navbar'
@@ -23,7 +24,7 @@ export default function WishlistPage() {
 
           {items.length === 0 ? (
             <div className="bg-white border border-border rounded-xl text-center py-20">
-              <p className="text-3xl mb-3">♡</p>
+              <Heart className="h-9 w-9 text-muted mx-auto mb-3" aria-hidden />
               <p className="font-bold text-dark mb-1">Your wishlist is empty</p>
               <p className="text-sm text-muted mb-6">Save products you like and come back to them later</p>
               <Link href="/shop" className="inline-flex h-11 px-6 bg-primary text-white font-semibold text-sm rounded-full items-center">

@@ -155,7 +155,7 @@ export default function EditProductPage() {
         </div>
         <button onClick={handleDelete} disabled={deleting}
           className="h-9 px-4 text-sm font-semibold text-danger border border-danger/30 rounded-full hover:bg-red-50 transition-colors disabled:opacity-50">
-          {deleting ? 'Deleting…' : '🗑 Delete Product'}
+          {deleting ? 'Deleting…' : 'Delete Product'}
         </button>
       </div>
 
@@ -253,7 +253,7 @@ export default function EditProductPage() {
               )}
               <label className={`block border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${uploading ? 'border-primary bg-orange-50' : 'border-border hover:border-primary'}`}>
                 <input type="file" accept="image/*" multiple onChange={handleImageUpload} className="sr-only" />
-                <p className="text-sm font-medium text-dark">{uploading ? '⏳ Uploading…' : '+ Add more images'}</p>
+                <p className="text-sm font-medium text-dark">{uploading ? 'Uploading…' : '+ Add more images'}</p>
               </label>
             </div>
 

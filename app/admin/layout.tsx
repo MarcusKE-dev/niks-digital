@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link                    from 'next/link'
 import { usePathname }         from 'next/navigation'
+import { LayoutDashboard, Package, ShoppingCart, Settings, Users, X } from 'lucide-react'
 
 const NAV = [
-  { href: '/admin',          icon: '📊', label: 'Dashboard'  },
-  { href: '/admin/products', icon: '📦', label: 'Products'   },
-  { href: '/admin/orders',   icon: '🛒', label: 'Orders'     },
-  { href: '/admin/settings', icon: '⚙️', label: 'Settings'   },
-  { href: '/admin/team',     icon: '👥', label: 'Team'       },
+  { href: '/admin',          icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/admin/products', icon: Package, label: 'Products' },
+  { href: '/admin/orders',   icon: ShoppingCart, label: 'Orders' },
+  { href: '/admin/settings', icon: Settings, label: 'Settings' },
+  { href: '/admin/team',     icon: Users, label: 'Team' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -53,8 +54,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button
             onClick={() => setOpen(false)}
             className="lg:hidden text-white/50 hover:text-white text-xl w-8 h-8 flex items-center justify-center"
+            aria-label="Close navigation"
           >
-            ✕
+            <X className="h-4 w-4" />
           </button>
         </div>
 
@@ -66,6 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 ? pathname === '/admin'
                 : pathname.startsWith(n.href)
             )
+            const Icon = n.icon
             return (
               <Link
                 key={n.href}
@@ -77,7 +80,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     : 'text-white/60 hover:text-white hover:bg-white/8'
                 }`}
               >
-                <span className="text-base">{n.icon}</span>
+                <Icon className="h-4 w-4" />
                 {n.label}
               </Link>
             )

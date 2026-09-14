@@ -11,7 +11,7 @@ export interface Category {
   name: string
   slug: string
   description: string | null
-  icon: string | null          // emoji or icon identifier
+  icon: string | null          // icon identifier
   image_url: string | null
   display_order: number
   created_at: string

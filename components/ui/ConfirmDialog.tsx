@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { AlertTriangle, Info, Trash2 } from 'lucide-react'
 
 interface Props {
   isOpen:    boolean
@@ -35,7 +36,11 @@ export function ConfirmDialog({
 
   if (!isOpen) return null
 
-  const ICONS    = { danger: '🗑', warning: '⚠️', info: 'ℹ️' }
+  const ICONS = {
+    danger:  <Trash2        className="h-6 w-6" aria-hidden />,
+    warning: <AlertTriangle className="h-6 w-6" aria-hidden />,
+    info:    <Info          className="h-6 w-6" aria-hidden />,
+  }
   const COLORS   = {
     danger:  'bg-red-50 text-danger border-red-100',
     warning: 'bg-orange-50 text-orange-600 border-orange-100',
@@ -56,7 +61,7 @@ export function ConfirmDialog({
       <div className="relative bg-white rounded-2xl shadow-modal w-full max-w-sm p-6 animate-slide-up">
 
         {/* Icon */}
-        <div className={`w-12 h-12 rounded-full border flex items-center justify-center text-2xl mx-auto mb-4 ${COLORS[variant]}`}>
+        <div className={`w-12 h-12 rounded-full border flex items-center justify-center mx-auto mb-4 ${COLORS[variant]}`}>
           {ICONS[variant]}
         </div>
 

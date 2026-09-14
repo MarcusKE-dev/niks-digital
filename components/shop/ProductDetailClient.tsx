@@ -127,7 +127,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
 
         {/* Delivery info */}
         <div className="bg-surface border border-border rounded-lg p-4 mb-6 text-sm">
-          <p className="font-semibold text-dark mb-1">🚚 Delivery Information</p>
+          <p className="font-semibold text-dark mb-1">Delivery Information</p>
           <p className="text-muted text-xs leading-relaxed">Free delivery in Nairobi on this item for orders above KES 10,000. Estimated delivery: 1–2 business days after payment confirmation.</p>
         </div>
 

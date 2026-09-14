@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS categories (
   name          TEXT        NOT NULL,
   slug          TEXT        UNIQUE NOT NULL,
   description   TEXT,
-  icon          TEXT,                    -- emoji, e.g. '📺'
+  icon          TEXT,                    -- icon identifier, e.g. 'tv'
   image_url     TEXT,
   display_order INT         NOT NULL DEFAULT 0,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()

@@ -1,3 +1,4 @@
+import { Clock3, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 
@@ -13,7 +14,7 @@ export default function ContactPage() {
           <div className="space-y-4">
             <a href="tel:+254798946124"
               className="flex items-center gap-4 bg-white border border-border rounded-xl p-5 hover:border-primary transition-colors group">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0">📞</div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0"><Phone className="h-6 w-6" /></div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted mb-0.5">Call Us</p>
                 <p className="font-bold text-dark text-lg group-hover:text-primary">+254798946124</p>
@@ -24,7 +25,7 @@ export default function ContactPage() {
             <a href="https://wa.me/254798946124"
               target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-4 bg-white border border-border rounded-xl p-5 hover:border-green-500 transition-colors group">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">💬</div>
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0"><MessageCircle className="h-6 w-6" /></div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted mb-0.5">WhatsApp</p>
                 <p className="font-bold text-dark text-lg group-hover:text-green-600">+254798946124</p>
@@ -33,7 +34,7 @@ export default function ContactPage() {
             </a>
 
             <div className="flex items-center gap-4 bg-white border border-border rounded-xl p-5">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0">📍</div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0"><MapPin className="h-6 w-6" /></div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted mb-0.5">Location</p>
                 <p className="font-bold text-dark">Kikuyu Town Centre</p>
@@ -42,7 +43,7 @@ export default function ContactPage() {
             </div>
 
             <div className="flex items-center gap-4 bg-white border border-border rounded-xl p-5">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0">⏰</div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-2xl flex-shrink-0"><Clock3 className="h-6 w-6" /></div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted mb-0.5">Hours</p>
                 <p className="font-bold text-dark">Monday – Sunday</p>

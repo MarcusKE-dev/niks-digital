@@ -1,7 +1,12 @@
 node_modules/
 .next/
-.env.local
+
+# Secrets — never commit an env file except the example
+.env
+.env.*
 *.env
-.env.*.local
+!.env.local.example
+
 .DS_Store
 *.pack.gz
+tsconfig.tsbuildinfo

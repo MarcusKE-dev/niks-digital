@@ -8,7 +8,7 @@ export default function AboutPage() {
       <main className="bg-surface min-h-screen py-16">
         <div className="container-site max-w-2xl">
           <h1 className="text-3xl font-extrabold text-dark mb-2">About Us</h1>
-          <p className="text-muted mb-10">Kikuyu Town's trusted electronics shop.</p>
+          <p className="text-muted mb-10">Kikuyu Town’s trusted electronics shop.</p>
 
           <div className="bg-white border border-border rounded-xl p-8 space-y-5 text-sm text-muted leading-relaxed">
             <p>

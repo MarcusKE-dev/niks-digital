@@ -5,6 +5,19 @@
 import { create }        from 'zustand'
 import { persist,
          createJSONStorage } from 'zustand/middleware'
+
+const safeBrowserStorage = createJSONStorage(() => ({
+  getItem: (name: string) => {
+    if (typeof window === 'undefined') return null
+    return localStorage.getItem(name)
+  },
+  setItem: (name: string, value: string) => {
+    if (typeof window !== 'undefined') localStorage.setItem(name, value)
+  },
+  removeItem: (name: string) => {
+    if (typeof window !== 'undefined') localStorage.removeItem(name)
+  },
+}))
 import type { CartItem, CartState, Product, ProductSummary } from '@/types'
 import { FREE_DELIVERY_THRESHOLD, DELIVERY_AREAS }            from '@/types'
 
@@ -127,7 +140,7 @@ export const useCartStore = create<CartState>()(
     // ── PERSISTENCE CONFIG ─────────────────────────────────
     {
       name: 'niks-digital-cart',   // localStorage key
-      storage: createJSONStorage(() => localStorage),
+      storage: safeBrowserStorage,
 
       // Only persist the items array (not computed functions)
       partialize: (state) => ({ items: state.items }),

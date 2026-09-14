@@ -17,7 +17,7 @@ const WHATSAPP_MESSAGES: Record<string, string> = {
   confirmed:  'Hi {name}! Your order {order} has been confirmed. We are preparing it now.',
   packed:     'Hi {name}! Great news — your order {order} has been packed and is ready for dispatch.',
   dispatched: 'Hi {name}! Your order {order} is on the way! Our team will deliver it to you shortly.',
-  delivered:  'Hi {name}! Your order {order} has been delivered. Thank you for shopping with Niks Digital Connections! 🙏',
+  delivered:  'Hi {name}! Your order {order} has been delivered. Thank you for shopping with Niks Digital Connections!',
   cancelled:  'Hi {name}, your order {order} has been cancelled. Please contact us if you have any questions.',
 }
 
@@ -243,7 +243,7 @@ export function OrderActions({ order }: Props) {
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full h-10 bg-green-500 text-white text-sm font-semibold rounded-full hover:bg-green-600 transition-colors"
           >
-            💬 Send on WhatsApp
+            Send on WhatsApp
           </a>
         )}
       </div>
@@ -257,7 +257,7 @@ export function OrderActions({ order }: Props) {
           disabled={deleting}
           className="w-full h-10 border border-danger text-danger text-sm font-semibold rounded-full hover:bg-red-50 disabled:opacity-50 transition-colors"
         >
-          {deleting ? 'Deleting...' : '🗑 Delete Order'}
+          {deleting ? 'Deleting...' : 'Delete Order'}
         </button>
       </div>
 
